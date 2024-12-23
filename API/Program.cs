@@ -8,6 +8,7 @@ using Repos.DbContextFactory;
 using Repos.IRepos;
 using Repos.Repos;
 using Services.IServices;
+using Services.Mappers;
 using Services.Services;
 using System.Text;
 
@@ -71,6 +72,8 @@ namespace API
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             //Add Automapper
 
+            builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+
             //Add Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -80,7 +83,8 @@ namespace API
             }).AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.RequireHttpsMetadata = false; options.TokenValidationParameters = new TokenValidationParameters
+                options.RequireHttpsMetadata = false; 
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -110,8 +114,8 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
             //Add Middleware
-            app.UseMiddleware<CustomExceptionHandlerMiddleware>();
-            app.UseMiddleware<PermissionHandlingMiddleware>();
+            //app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+            //app.UseMiddleware<PermissionHandlingMiddleware>();
             app.MapControllers();
             app.Run();
         }

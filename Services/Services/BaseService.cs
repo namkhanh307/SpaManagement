@@ -63,14 +63,14 @@ namespace Services.Services
 
         public async Task PostAsync(TPostModel model)
         {
-            string currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+            //string currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
             try
             {
                 ModelValidator.ValidateModel(model);
                 var entity = _mapper.Map<T>(model);
                 if (entity is BaseEntity baseEntity)
                 {
-                    baseEntity.CreatedBy = currentUserId;
+                    baseEntity.CreatedBy = "currentUserId";
                     baseEntity.CreatedAt = DateTime.Now;
                 }
                 await _unitOfWork.GetRepo<T>().Insert(entity);
