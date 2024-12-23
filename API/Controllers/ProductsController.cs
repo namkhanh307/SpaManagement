@@ -1,5 +1,4 @@
 ﻿using Core.Infrastructures;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repos.Entities;
 using Repos.ViewModels.ProductVM;

@@ -37,6 +37,8 @@ namespace Services.Services
             var response = entities.Select(item =>
             {
                 var result = _mapper.Map<TGetModel>(item);
+                Task<User?> user = _unitOfWork.GetRepo<User>().GetById(item.CreatedBy ?? "");
+                result.CreatedBy = user.Result != null ? user.Result.FullName : "";
                 if (item.CreatedBy == currentUserId)
                 {
                     dynamic dynamicResult = result as dynamic;
@@ -58,8 +60,19 @@ namespace Services.Services
             {
                 query = include(query);
             }
-            return _mapper.Map<TGetModel>(await query.FirstOrDefaultAsync(e => EF.Property<string>(e, "Id") == id));
+            T? result = await query.FirstOrDefaultAsync(e => EF.Property<string>(e, "Id") == id);
+            if (result != null)
+            {
+                Task<User?> user = _unitOfWork.GetRepo<User>().GetById(result.CreatedBy != null ? result.CreatedBy : "");
+                result.CreatedBy = user.Result != null ? user.Result.FullName : "";
+                return _mapper.Map<TGetModel>(result);
+            }
+            else
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Không tồn tại thực thể!");
+            }
         }
+
 
         public async Task PostAsync(TPostModel model)
         {
