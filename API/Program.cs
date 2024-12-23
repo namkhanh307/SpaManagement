@@ -114,8 +114,8 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
             //Add Middleware
-            //app.UseMiddleware<CustomExceptionHandlerMiddleware>();
-            //app.UseMiddleware<PermissionHandlingMiddleware>();
+            app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+            app.UseMiddleware<PermissionHandlingMiddleware>();
             app.MapControllers();
             app.Run();
         }
