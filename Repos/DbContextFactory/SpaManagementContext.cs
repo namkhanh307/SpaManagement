@@ -53,19 +53,14 @@ public partial class SpaManagementContext : DbContext
 
     public virtual DbSet<Vote> Votes { get; set; }
 
-    public static string? GetConnectionString(string connectionStringName)
+    private string? GetConnectionString()
     {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        string? connectionString = config.GetConnectionString(connectionStringName);
-        return connectionString;
+        IConfiguration configuration = new ConfigurationBuilder().SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../API")).AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+        return configuration["ConnectionStrings:DefaultConnection"];
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+        => optionsBuilder.UseSqlServer(GetConnectionString());
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -114,9 +109,19 @@ public partial class SpaManagementContext : DbContext
 
         modelBuilder.Entity<PackageService>(entity =>
         {
-            entity.HasKey(f => new { f.PackageId, f.ServiceId });
+            entity.HasKey(e => new { e.PackageId, e.ServiceId });
 
+            entity.HasOne<Package>()
+                  .WithMany()
+                  .HasForeignKey(e => e.PackageId)
+                  .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.NoAction
+
+            entity.HasOne<Service>()
+                  .WithMany()
+                  .HasForeignKey(e => e.ServiceId)
+                  .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.NoAction
         });
+
 
         modelBuilder.Entity<Product>(entity =>
         {
