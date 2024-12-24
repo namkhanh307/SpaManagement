@@ -103,11 +103,7 @@ namespace Services.Services
             {
                 ModelValidator.ValidateModel(model);
                 var repository = _unitOfWork.GetRepo<T>();
-                var entity = await repository.GetById(id);
-
-                if (entity == null)
-                    throw new KeyNotFoundException("Entity not found.");
-
+                var entity = await repository.GetById(id) ?? throw new KeyNotFoundException("Entity not found.");
                 _mapper.Map(model, entity);
                 if (entity is BaseEntity baseEntity)
                 {

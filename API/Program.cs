@@ -1,10 +1,12 @@
 ﻿using API.Middleware;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repos.DbContextFactory;
+using Repos.Entities;
 using Repos.IRepos;
 using Repos.Repos;
 using Services.IServices;
@@ -60,16 +62,21 @@ namespace API
                     }
                 });
             });
+
             //Add DBContext
             builder.Services.AddDbContext<SpaManagementContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("DefaultConnection"),
-                    sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()
+                    builder.Configuration.GetConnectionString("DefaultConnection")
                 )
             );
+            //Add Identity
+            builder.Services.AddIdentity<User, Role>(options =>{}).AddEntityFrameworkStores<SpaManagementContext>().AddDefaultTokenProviders();
             //Add Scope
             builder.Services.AddScoped(typeof(IBaseService<,,,>), typeof(BaseService<,,,>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+
             //Add Automapper
 
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);

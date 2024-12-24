@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Repos.Entities;
 
 namespace Repos.DbContextFactory;
 
-public partial class SpaManagementContext : DbContext
+public partial class SpaManagementContext : IdentityDbContext<User, Role, Guid, UserClaims, UserRoles, UserLogins, RoleClaim, UserTokens>
 {
     public SpaManagementContext()
     {
@@ -12,46 +13,30 @@ public partial class SpaManagementContext : DbContext
 
     public SpaManagementContext(DbContextOptions<SpaManagementContext> options)
         : base(options) { }
-
-    public virtual DbSet<Booking> Bookings { get; set; }
-
-    public virtual DbSet<Image> Images { get; set; }
-
-    public virtual DbSet<Order> Orders { get; set; }
-
-    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-
-    public virtual DbSet<Package> Packages { get; set; }
-
-    public virtual DbSet<PackageImage> PackageImages { get; set; }
-
-    public virtual DbSet<PackageService> PackageServices { get; set; }
-
-    public virtual DbSet<Product> Products { get; set; }
-
-    public virtual DbSet<ProductImage> ProductImages { get; set; }
-
-    public virtual DbSet<Role> Roles { get; set; }
-
-    public virtual DbSet<Salary> Salaries { get; set; }
-
-    public virtual DbSet<SalaryPerHour> SalaryPerHours { get; set; }
-
-    public virtual DbSet<Schedule> Schedules { get; set; }
-
-    public virtual DbSet<Service> Services { get; set; }
-
-    public virtual DbSet<ServiceImage> ServiceImages { get; set; }
-
-    public virtual DbSet<User> Users { get; set; }
-
-    public virtual DbSet<UserRole> UserRoles { get; set; }
-
-    public virtual DbSet<UserSchedule> UserSchedules { get; set; }
-
-    public virtual DbSet<UserScheduleBooking> UserScheduleBookings { get; set; }
-
-    public virtual DbSet<Vote> Votes { get; set; }
+    public override DbSet<User> Users => Set<User>();
+    public override DbSet<Role> Roles => Set<Role>();
+    public override DbSet<UserClaims> UserClaims => Set<UserClaims>();
+    public override DbSet<UserRoles> UserRoles => Set<UserRoles>();
+    public override DbSet<UserLogins> UserLogins => Set<UserLogins>();
+    public override DbSet<RoleClaim> RoleClaims => Set<RoleClaim>();
+    public override DbSet<UserTokens> UserTokens => Set<UserTokens>();
+    public virtual DbSet<Booking> Bookings => Set<Booking>();
+    public virtual DbSet<Image> Images => Set<Image>();
+    public virtual DbSet<Order> Orders => Set<Order>();
+    public virtual DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();   
+    public virtual DbSet<Package> Packages => Set<Package>();
+    public virtual DbSet<PackageImage> PackageImages => Set<PackageImage>();        
+    public virtual DbSet<PackageService> PackageServices => Set<PackageService>();      
+    public virtual DbSet<Product> Products => Set<Product>();
+    public virtual DbSet<ProductImage> ProductImages => Set<ProductImage>();    
+    public virtual DbSet<Salary> Salaries => Set<Salary>(); 
+    public virtual DbSet<SalaryPerHour> SalaryPerHours => Set<SalaryPerHour>();
+    public virtual DbSet<Schedule> Schedules => Set<Schedule>();  
+    public virtual DbSet<Service> Services => Set<Service>();   
+    public virtual DbSet<ServiceImage> ServiceImages => Set<ServiceImage>();
+    public virtual DbSet<UserSchedule> UserSchedules => Set<UserSchedule>();
+    public virtual DbSet<UserScheduleBooking> UserScheduleBookings => Set<UserScheduleBooking>();
+    public virtual DbSet<Vote> Votes => Set<Vote>();
 
     private string? GetConnectionString()
     {
@@ -64,6 +49,15 @@ public partial class SpaManagementContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            string tableName = entityType.GetTableName() ?? "";
+            if (tableName.StartsWith("AspNet"))
+            {
+                entityType.SetTableName(tableName.Substring(6));
+            }
+        }
         modelBuilder.Entity<Booking>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -111,15 +105,15 @@ public partial class SpaManagementContext : DbContext
         {
             entity.HasKey(e => new { e.PackageId, e.ServiceId });
 
-            entity.HasOne<Package>()
+            entity.HasOne(d => d.Package)
                   .WithMany()
                   .HasForeignKey(e => e.PackageId)
-                  .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.NoAction
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne<Service>()
+            entity.HasOne(d => d.Service)
                   .WithMany()
                   .HasForeignKey(e => e.ServiceId)
-                  .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.NoAction
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
 
@@ -167,19 +161,6 @@ public partial class SpaManagementContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);
-        });
-
-        modelBuilder.Entity<UserRole>(entity =>
-        {
-            entity.HasKey(e => new { e.RoleId, e.UserId });
-
-            entity.HasOne(d => d.Role).WithMany(p => p.UserRoles)
-                .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.User).WithMany(p => p.UserRoles)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<UserSchedule>(entity =>
