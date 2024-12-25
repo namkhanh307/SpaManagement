@@ -121,6 +121,7 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
             //Add Middleware
+            app.UseMiddleware<RefreshTokenMiddleware>();
             app.UseMiddleware<CustomExceptionHandlerMiddleware>();
             app.UseMiddleware<PermissionHandlingMiddleware>();
             app.MapControllers();

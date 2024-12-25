@@ -1,16 +1,19 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repos.ViewModels.AuthVM;
 using Repos.ViewModels.UserVM;
 using Services.IServices;
+using Services.Services;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService authService) : ControllerBase
+    public class AuthController(IAuthService authService, ITokenService tokenService) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
+        private readonly ITokenService _tokenService = tokenService;
 
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(PostSignUpVM model)
@@ -35,6 +38,15 @@ namespace API.Controllers
         {
             GetUsersVM result = await _authService.GetInfo();
             return Ok(new BaseResponseModel<GetUsersVM>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: result));
+        }
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> Refresh(string oldRefreshToken)
+        {
+            GetTokensVM result = await _tokenService.GenerateNewRefreshTokenAsync(oldRefreshToken);
+            return Ok(new BaseResponseModel<GetTokensVM>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));

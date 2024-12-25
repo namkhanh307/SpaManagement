@@ -25,16 +25,16 @@ namespace Services.Services
 
         public async Task<GetSignInVM> SignIn(PostSignInVM request)
         {
-            User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.UserName == request.UserName);
+            User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.PhoneNumber == request.PhoneNumber);
             if (user == null)
             {
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Số điện thoại này chưa có tài khoản! Vui lòng đăng ký!");
             }
-            if (user.Password != HashPasswordService.HashPasswordThrice(request.Password))
+            if (user.PasswordHash != HashPasswordService.HashPasswordThrice(request.Password))
             {
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Số điện thoại hoặc mật khẩu không đúng!");
             }
-            GetTokensVM token = _tokenService.GenerateTokens(user);
+            GetTokensVM token = await _tokenService.GenerateTokens(user.Id.ToString(), null);
             return new GetSignInVM()
             {
                 User = _mapper.Map<GetUsersVM>(user),
@@ -44,7 +44,7 @@ namespace Services.Services
 
         public async Task SignUp(PostSignUpVM model)
         {
-            User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.UserName == model.UserName);
+            User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.PhoneNumber == model.PhoneNumber);
             if (user != null)
             {
                 throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "Số điện thoại này đã được đăng ký! Vui lòng đăng nhập!");
@@ -55,8 +55,10 @@ namespace Services.Services
             }
             User newUser = new()
             {
-                FullName = model.Name,
-                Password = HashPasswordService.HashPasswordThrice(model.Password),
+                Id = Guid.NewGuid(),
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                PasswordHash = HashPasswordService.HashPasswordThrice(model.Password),
             };
             await _unitOfWork.GetRepo<User>().Insert(newUser);
             await _unitOfWork.Save();
