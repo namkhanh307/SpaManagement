@@ -70,7 +70,7 @@ namespace API
                 )
             );
             //Add Identity
-            builder.Services.AddIdentity<User, Role>(options =>{}).AddEntityFrameworkStores<SpaManagementContext>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<User, Role>(options => { }).AddEntityFrameworkStores<SpaManagementContext>().AddDefaultTokenProviders();
             //Add Scope
             builder.Services.AddScoped(typeof(IBaseService<,,,>), typeof(BaseService<,,,>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

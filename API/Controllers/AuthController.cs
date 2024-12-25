@@ -1,10 +1,8 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Repos.ViewModels.AuthVM;
 using Repos.ViewModels.UserVM;
 using Services.IServices;
-using Services.Services;
 
 namespace API.Controllers
 {

@@ -1,6 +1,4 @@
-﻿
-using Repos.Entities;
-using Repos.ViewModels.AuthVM;
+﻿using Repos.ViewModels.AuthVM;
 using System.Security.Claims;
 
 namespace Services.IServices

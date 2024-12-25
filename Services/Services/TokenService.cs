@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Core.Infrastructures;
+﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +9,6 @@ using Repos.ViewModels.AuthVM;
 using Services.IServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Services.Services
@@ -70,7 +68,7 @@ namespace Services.Services
             var refreshTokenString = new JwtSecurityTokenHandler().WriteToken(refreshToken);
             var userTokenRepo = _unitOfWork.GetRepo<UserTokens>();
             var userToken = await userTokenRepo.Entities.FirstOrDefaultAsync(ut => ut.UserId.ToString() == userId);
-            if(userToken == null)
+            if (userToken == null)
             {
                 UserTokens newUserToken = new()
                 {
@@ -107,7 +105,7 @@ namespace Services.Services
 
             var userTokenRepo = _unitOfWork.GetRepo<UserTokens>();
             var userToken = await userTokenRepo.Entities.FirstOrDefaultAsync(ut => ut.UserId.ToString() == userId);
-            GetTokensVM tokensVM = await GenerateTokens(userId, expiredTime);      
+            GetTokensVM tokensVM = await GenerateTokens(userId, expiredTime);
             if (userToken != null)
             {
                 userToken.RefreshToken = tokensVM.RefreshToken;

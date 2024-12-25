@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Repos.Entities;
 using Repos.IRepos;
 using Services.IServices;
@@ -17,10 +16,8 @@ namespace API.Middleware
 
         public async Task InvokeAsync(HttpContext context, IServiceProvider serviceProvider)
         {
-            // Create a new scope for scoped services
             using var scope = serviceProvider.CreateScope();
 
-            // Resolve services within the scoped context
             var tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -29,13 +26,11 @@ namespace API.Middleware
             {
                 var token = authHeader.Substring("Bearer ".Length).Trim();
 
-                // Validate and process the token
                 var principal = tokenService.GetPrincipalFromExpiredToken(token);
                 if (principal != null)
                 {
                     var userId = principal.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-
-                    // Check if the token has expired
+                    //var userId = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor)
                     if (tokenService.IsTokenExpired(token))
                     {
                         var userToken = await unitOfWork.GetRepo<UserTokens>()
@@ -44,21 +39,16 @@ namespace API.Middleware
 
                         if (userToken != null && userToken.ExpiredTime > DateTime.UtcNow)
                         {
-                            // Refresh tokens
                             var newAccessToken = await tokenService.GenerateTokens(userId, null);
                             var newRefreshToken = await tokenService.GenerateNewRefreshTokenAsync(userToken.RefreshToken);
 
-                            // Add the new tokens to response headers
                             context.Response.Headers["New-Access-Token"] = newAccessToken.AccessToken;
                             context.Response.Headers["New-Refresh-Token"] = newRefreshToken.RefreshToken;
-
-                            // Replace the user's principal in the HttpContext
                             context.User = principal;
                         }
                     }
                     else
                     {
-                        // Token is still valid; set the user context
                         context.User = principal;
                     }
                 }
