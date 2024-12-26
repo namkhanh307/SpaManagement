@@ -106,12 +106,12 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, Guid, 
             entity.HasKey(e => new { e.PackageId, e.ServiceId });
 
             entity.HasOne(d => d.Package)
-                  .WithMany()
+                  .WithMany(d => d.PackageServices)
                   .HasForeignKey(e => e.PackageId)
                   .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(d => d.Service)
-                  .WithMany()
+                  .WithMany(d => d.PackageServices)
                   .HasForeignKey(e => e.ServiceId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
@@ -131,6 +131,8 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, Guid, 
         modelBuilder.Entity<Salary>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.HasOne(d => d.User).WithMany(p => p.Salaries)
+               .HasForeignKey(d => d.UserId);
         });
 
         modelBuilder.Entity<SalaryPerHour>(entity =>
@@ -149,8 +151,6 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, Guid, 
         modelBuilder.Entity<Service>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasOne(d => d.Package).WithMany(p => p.Services)
-                .HasForeignKey(d => d.PackageId);
         });
 
         modelBuilder.Entity<ServiceImage>(entity =>
@@ -158,24 +158,42 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, Guid, 
             entity.HasKey(f => new { f.ServiceId, f.ImageId });
         });
 
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-        });
+        //modelBuilder.Entity<User>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id);
+        //});
 
         modelBuilder.Entity<UserSchedule>(entity =>
         {
             entity.HasKey(e => e.Id);
+          
 
-            entity.HasOne(d => d.Salary).WithMany()
-                .HasForeignKey(d => d.SalaryId);
+            entity.HasOne(d => d.Schedule)
+                .WithMany(s => s.UserSchedules)
+                .HasForeignKey(d => d.ScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(d => d.Schedule).WithMany()
-                .HasForeignKey(d => d.ScheduleId);
-
-            entity.HasOne(d => d.User).WithMany()
-                .HasForeignKey(d => d.UserId);
+            entity.HasOne(d => d.User)
+                .WithMany(u => u.UserSchedules)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_UserSchedule_User");
         });
+
+        //modelBuilder.Entity<UserRoles>(entity =>
+        //{
+        //    entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+        //    entity.HasOne(ur => ur.User)
+        //        .WithMany(u => u.UserRoles)
+        //        .HasForeignKey(ur => ur.UserId)
+        //        .OnDelete(DeleteBehavior.Cascade);
+
+        //    entity.HasOne(ur => ur.Role)
+        //        .WithMany()
+        //        .HasForeignKey(ur => ur.RoleId)
+        //        .OnDelete(DeleteBehavior.Cascade);
+        //});
 
         modelBuilder.Entity<UserScheduleBooking>(entity =>
         {

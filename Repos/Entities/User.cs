@@ -16,7 +16,8 @@ namespace Repos.Entities
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<SalaryPerHour> SalaryPerHours { get; set; } = new List<SalaryPerHour>();
         public virtual ICollection<UserSchedule> UserSchedules { get; set; } = new List<UserSchedule>();
-        public virtual ICollection<UserRoles> UserRoles { get; set; } = new List<UserRoles>();
+        public virtual ICollection<Salary> Salaries { get; set; } = new List<Salary>();
+        //public virtual ICollection<UserRoles> UserRoles { get; set; } = new List<UserRoles>();
         public User()
         {
             CreatedAt = DateTime.Now;

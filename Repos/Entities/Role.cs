@@ -12,6 +12,8 @@ namespace Repos.Entities
         public string? UpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
         public bool? Status { get; set; }
+        //public virtual ICollection<UserRoles> UserRoles { get; set; } = new List<UserRoles>();
+
 
     }
 }

@@ -326,6 +326,9 @@ namespace Repos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
@@ -502,11 +505,12 @@ namespace Repos.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Salaries");
                 });
@@ -615,10 +619,6 @@ namespace Repos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PackageId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
@@ -632,8 +632,6 @@ namespace Repos.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PackageId");
 
                     b.ToTable("Services");
                 });
@@ -672,6 +670,50 @@ namespace Repos.Migrations
                     b.HasIndex("ImageId");
 
                     b.ToTable("ServiceImages");
+                });
+
+            modelBuilder.Entity("Repos.Entities.Transaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Amound")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool?>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("Repos.Entities.User", b =>
@@ -885,14 +927,9 @@ namespace Repos.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("UserRoles", (string)null);
                 });
@@ -940,9 +977,6 @@ namespace Repos.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("SalaryId");
@@ -950,8 +984,6 @@ namespace Repos.Migrations
                     b.HasIndex("ScheduleId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("UserSchedules");
                 });
@@ -1157,13 +1189,13 @@ namespace Repos.Migrations
             modelBuilder.Entity("Repos.Entities.PackageService", b =>
                 {
                     b.HasOne("Repos.Entities.Package", "Package")
-                        .WithMany()
+                        .WithMany("PackageServices")
                         .HasForeignKey("PackageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Repos.Entities.Service", "Service")
-                        .WithMany()
+                        .WithMany("PackageServices")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1201,6 +1233,17 @@ namespace Repos.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Repos.Entities.Salary", b =>
+                {
+                    b.HasOne("Repos.Entities.User", "User")
+                        .WithMany("Salaries")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Repos.Entities.SalaryPerHour", b =>
                 {
                     b.HasOne("Repos.Entities.User", "User")
@@ -1210,17 +1253,6 @@ namespace Repos.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Repos.Entities.Service", b =>
-                {
-                    b.HasOne("Repos.Entities.Package", "Package")
-                        .WithMany("Services")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Package");
                 });
 
             modelBuilder.Entity("Repos.Entities.ServiceImage", b =>
@@ -1240,6 +1272,17 @@ namespace Repos.Migrations
                     b.Navigation("Image");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Repos.Entities.Transaction", b =>
+                {
+                    b.HasOne("Repos.Entities.Order", "Order")
+                        .WithMany("Transactions")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Repos.Entities.UserClaims", b =>
@@ -1273,10 +1316,6 @@ namespace Repos.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Repos.Entities.User", null)
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Repos.Entities.UserSchedule", b =>
@@ -1288,20 +1327,17 @@ namespace Repos.Migrations
                         .IsRequired();
 
                     b.HasOne("Repos.Entities.Schedule", "Schedule")
-                        .WithMany()
+                        .WithMany("UserSchedules")
                         .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Repos.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Repos.Entities.User", null)
                         .WithMany("UserSchedules")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserSchedule_User");
 
                     b.Navigation("Salary");
 
@@ -1333,6 +1369,8 @@ namespace Repos.Migrations
             modelBuilder.Entity("Repos.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Repos.Entities.OrderDetail", b =>
@@ -1344,7 +1382,7 @@ namespace Repos.Migrations
                 {
                     b.Navigation("OrderDetails");
 
-                    b.Navigation("Services");
+                    b.Navigation("PackageServices");
                 });
 
             modelBuilder.Entity("Repos.Entities.Product", b =>
@@ -1352,18 +1390,25 @@ namespace Repos.Migrations
                     b.Navigation("OrderDetails");
                 });
 
+            modelBuilder.Entity("Repos.Entities.Schedule", b =>
+                {
+                    b.Navigation("UserSchedules");
+                });
+
             modelBuilder.Entity("Repos.Entities.Service", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("PackageServices");
                 });
 
             modelBuilder.Entity("Repos.Entities.User", b =>
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("SalaryPerHours");
+                    b.Navigation("Salaries");
 
-                    b.Navigation("UserRoles");
+                    b.Navigation("SalaryPerHours");
 
                     b.Navigation("UserSchedules");
                 });

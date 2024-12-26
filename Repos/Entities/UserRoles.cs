@@ -11,6 +11,8 @@ namespace Repos.Entities
         public string? UpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
         public bool? Status { get; set; }
+        //public virtual User? User { get; set; }
+        //public virtual Role? Role { get; set; }
         public UserRoles()
         {
             CreatedAt = DateTime.Now;
