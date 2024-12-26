@@ -40,14 +40,14 @@ namespace API.Controllers
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
         }
-        [HttpPost("Refresh")]
-        public async Task<IActionResult> Refresh(string oldRefreshToken)
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
         {
-            GetTokensVM result = await _tokenService.GenerateNewRefreshTokenAsync(oldRefreshToken);
-            return Ok(new BaseResponseModel<GetTokensVM>(
+            await _authService.ChangePassword(model);
+            return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: result));
+                data: "Đổi mật khẩu thành công!"));
         }
     }
 }

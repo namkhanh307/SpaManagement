@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.IRepos;
@@ -17,6 +19,24 @@ namespace Services.Services
         private readonly IMapper _mapper = mapper;
         private readonly ITokenService _tokenService = tokenService;
 
+        public async Task ChangePassword(ChangePasswordVM model)
+        {
+            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+            User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.Id.ToString() == idUser) ?? throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Người dùng không tồn tại!");
+
+            if (user.PasswordHash != HashPasswordService.HashPasswordThrice(model.OldPassword))
+            {
+                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Mật khẩu cũ không chính xác!");
+            }
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.InvalidInput, "Mật khẩu và xác nhận mật khẩu không khớp!");
+            }
+            user.PasswordHash = HashPasswordService.HashPasswordThrice(model.NewPassword);
+            await _unitOfWork.GetRepo<User>().Update(user);
+            await _unitOfWork.Save();
+        }
+
         public async Task<GetUsersVM> GetInfo()
         {
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
@@ -25,11 +45,7 @@ namespace Services.Services
 
         public async Task<GetSignInVM> SignIn(PostSignInVM request)
         {
-            User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.PhoneNumber == request.PhoneNumber);
-            if (user == null)
-            {
-                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Số điện thoại này chưa có tài khoản! Vui lòng đăng ký!");
-            }
+            User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.PhoneNumber == request.PhoneNumber) ?? throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Số điện thoại này chưa có tài khoản! Vui lòng đăng ký!");
             if (user.PasswordHash != HashPasswordService.HashPasswordThrice(request.Password))
             {
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Số điện thoại hoặc mật khẩu không đúng!");

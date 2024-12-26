@@ -10,35 +10,30 @@ namespace Core.Infrastructures
         public static string SecretKey { get; set; } = string.Empty;// Static property to store the secret key
         public static string GetUserIdFromHttpContextAccessor(IHttpContextAccessor httpContextAccessor)
         {
-            try
+            if (httpContextAccessor.HttpContext == null || !httpContextAccessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
             {
-                if (httpContextAccessor.HttpContext == null || !httpContextAccessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
-                {
-                    throw new UnauthorizedException("Authorization header is required.");
-                }
-
-                string? authorizationHeader = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
-
-                if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new UnauthorizedException($"Invalid authorization header: {authorizationHeader}");
-                }
-
-                string jwtToken = authorizationHeader["Bearer ".Length..].Trim();
-
-                if (!ValidateToken(jwtToken, out ClaimsPrincipal principal))
-                {
-                    throw new UnauthorizedException("Token validation failed.");
-                }
-
-                var idClaim = principal.Claims.FirstOrDefault(claim => claim.Type == "id");
-
-                return idClaim?.Value ?? throw new UnauthorizedException("User ID claim not found in token.");
+                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Authorization header is required!");
             }
-            catch (UnauthorizedException ex)
+
+            string? authorizationHeader = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
             {
-                return HandleUnauthorizedResponse(httpContextAccessor, ex.Message);
+                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, $"Invalid authorization header: {authorizationHeader}");
+
             }
+
+            string jwtToken = authorizationHeader["Bearer ".Length..].Trim();
+
+            if (!ValidateToken(jwtToken, out ClaimsPrincipal principal))
+            {
+                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Token validation failed!");
+
+            }
+
+            var idClaim = principal.Claims.FirstOrDefault(claim => claim.Type == "id");
+
+            return idClaim?.Value ?? throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "User ID claim not found in token!");
         }
 
         public static bool ValidateToken(string token, out ClaimsPrincipal principal)
