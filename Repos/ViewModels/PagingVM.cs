@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Repos.ViewModels
 {
-    public class PagingVM<T> where T : class
+    public class PagingVM<T> where T : BaseVM
     {
-        public IEnumerable<T> List = new List<T>();
-        public int PageSize;
-        public int PageNumber;
-        public int TotalPages;
+        public IEnumerable<T>? List { get; set; }
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
+        public int TotalPages { get; set; }
     }
 }

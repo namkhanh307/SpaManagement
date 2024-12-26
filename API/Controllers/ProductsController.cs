@@ -14,9 +14,9 @@ namespace API.Controllers
     {
         private readonly IBaseService<PostProductVM, PostProductVM, GetProductsVM, Product> _baseService = baseService;
         [HttpGet("get")]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts(int pageNumber = 1, int pageSize = 10)
         {
-            PagingVM<GetProductsVM> result = await _baseService.GetAsync();
+            PagingVM<GetProductsVM> result = await _baseService.GetAsync(null, null, null, pageNumber, pageSize);         
             return Ok(new BaseResponseModel<PagingVM<GetProductsVM>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
