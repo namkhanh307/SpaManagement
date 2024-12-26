@@ -19,7 +19,7 @@ namespace API.Middleware
         {
             try
             {
-                var check = context.User.Identity.IsAuthenticated;
+                var check = context.User.Identity != null ? context.User.Identity.IsAuthenticated : false;
                 await _next(context);
             }
             catch (CoreException ex)
@@ -40,9 +40,9 @@ namespace API.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred.");
+                _logger.LogError(ex, "Đã xảy ra lỗi!");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                var result = JsonSerializer.Serialize(new { error = $"An unexpected error occurred. Detail: {ex.Message}" });
+                var result = JsonSerializer.Serialize(new { error = $"Chi tiết: {ex.Message}" });
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(result);
             }

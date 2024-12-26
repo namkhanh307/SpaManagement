@@ -139,7 +139,7 @@ namespace Services.Services
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]);
+            var key = Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]!);
             var parameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -157,7 +157,7 @@ namespace Services.Services
             }
             catch
             {
-                return null;
+                return null!;
             }
         }
 

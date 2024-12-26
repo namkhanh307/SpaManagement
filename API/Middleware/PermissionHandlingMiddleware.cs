@@ -34,7 +34,7 @@ namespace API.Middleware
             else
             {
                 var code = HttpStatusCode.Forbidden;
-                var result = JsonSerializer.Serialize(new { error = "You don't have permission to access this feature" });
+                var result = JsonSerializer.Serialize(new { error = "Bạn không có quyền truy cập chức năng này!" });
                 context.Response.ContentType = "application/json";
                 context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 context.Response.StatusCode = (int)code;

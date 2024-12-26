@@ -38,7 +38,7 @@ namespace Core.Infrastructures
 
         public static bool ValidateToken(string token, out ClaimsPrincipal principal)
         {
-            principal = null;
+            principal = null!;
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = System.Text.Encoding.UTF8.GetBytes(SecretKey); // Ensure UTF-8 encoding
 
@@ -63,7 +63,7 @@ namespace Core.Infrastructures
             {
                 Console.WriteLine("Token validation failed: " + ex.Message);
                 return false;
-            }
+            }   
         }
 
 
@@ -72,7 +72,7 @@ namespace Core.Infrastructures
             var errorResponse = new
             {
                 data = "An unexpected error occurred.",
-                additionalData = (object)null,
+                additionalData = (object)null!,
                 message = errorMessage,
                 statusCode = StatusCodes.Status401Unauthorized,
                 code = "Unauthorized!"
@@ -87,7 +87,7 @@ namespace Core.Infrastructures
                 httpContextAccessor.HttpContext.Response.WriteAsync(jsonResponse).Wait();
             }
 
-            return null;
+            return null!;
         }
         public static string GetUserIdFromHttpContext(HttpContext httpContext)
         {
@@ -124,7 +124,7 @@ namespace Core.Infrastructures
                 var errorResponse = new
                 {
                     data = "An unexpected error occurred.",
-                    additionalData = (object)null, // Explicitly setting null type
+                    additionalData = (object)null!, // Explicitly setting null type
                     message = ex.Message,
                     statusCode = StatusCodes.Status401Unauthorized,
                     code = "Unauthorized!"
@@ -175,7 +175,7 @@ namespace Core.Infrastructures
                 var errorResponse = new
                 {
                     data = "An unexpected error occurred.",
-                    additionalData = (object)null, // Explicitly setting null type
+                    additionalData = (object)null!, // Explicitly setting null type
                     message = ex.Message,
                     statusCode = StatusCodes.Status401Unauthorized,
                     code = "Unauthorized!"

@@ -29,7 +29,7 @@ namespace API.Middleware
                 var principal = tokenService.GetPrincipalFromExpiredToken(token);
                 if (principal != null)
                 {
-                    var userId = principal.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                    string? userId = principal.Claims.FirstOrDefault(c => c.Type == "id")?.Value ?? "";
                     //var userId = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor)
                     if (tokenService.IsTokenExpired(token))
                     {

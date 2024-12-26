@@ -17,7 +17,7 @@ namespace Core.Infrastructures
 
         public int StatusCode { get; set; }
 
-        [JsonExtensionData] public Dictionary<string, object> AdditionalData { get; set; }
+        [JsonExtensionData] public Dictionary<string, object> AdditionalData { get; set; } = new Dictionary<string, object>();
 
     }
     public class BadRequestException : ErrorException
