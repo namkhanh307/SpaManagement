@@ -28,7 +28,7 @@ namespace API.Middleware
             _rolePermissions = new Dictionary<string, List<string>>()
             {
                 { "Staff", new List<string> {"/api/Products/", "/api/Orders" } },
-                { "User", new List<string> { "/api/Products/Get" } }
+                { "User", new List<string> { "/api/Products/get" } }
             };
         }
 

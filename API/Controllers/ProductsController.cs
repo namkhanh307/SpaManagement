@@ -12,7 +12,7 @@ namespace API.Controllers
     public class ProductsController(IBaseService<PostProductVM, PostProductVM, GetProductsVM, Product> baseService) : ControllerBase
     {
         private readonly IBaseService<PostProductVM, PostProductVM, GetProductsVM, Product> _baseService = baseService;
-        [HttpGet("Get")]
+        [HttpGet("get")]
         public async Task<IActionResult> GetProducts(string productId)
         {
             IEnumerable<GetProductsVM> result = await _baseService.GetAsync(include: o => o.Include(r => r.OrderDetails), filter: o => o.Id == productId);
@@ -21,7 +21,7 @@ namespace API.Controllers
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
         }
-        [HttpPost("Post")]
+        [HttpPost("post")]
         public async Task<IActionResult> PostProduct(PostProductVM model)
         {
             await _baseService.PostAsync(model);
