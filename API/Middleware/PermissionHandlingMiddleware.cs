@@ -36,7 +36,7 @@ namespace API.Middleware
                 var code = HttpStatusCode.Forbidden;
                 var result = JsonSerializer.Serialize(new { error = "Bạn không có quyền truy cập chức năng này!" });
                 context.Response.ContentType = "application/json";
-                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
                 context.Response.StatusCode = (int)code;
                 await context.Response.WriteAsync(result);
             }

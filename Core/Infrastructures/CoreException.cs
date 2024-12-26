@@ -22,7 +22,7 @@ namespace Core.Infrastructures
     }
     public class BadRequestException : ErrorException
     {
-        public BadRequestException(string errorCode, string message = null)
+        public BadRequestException(string errorCode, string message = null!)
             : base(400, errorCode, message)
         {
         }
@@ -43,7 +43,7 @@ namespace Core.Infrastructures
 
         public ErrorDetail ErrorDetail { get; }
 
-        public ErrorException(int statusCode, string errorCode, string message = null)
+        public ErrorException(int statusCode, string errorCode, string message = null!)
         {
             StatusCode = statusCode;
             ErrorDetail = new ErrorDetail
