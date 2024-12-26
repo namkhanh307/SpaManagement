@@ -2,7 +2,7 @@
 
 public partial class Salary : BaseEntity
 {
-    public Guid UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public double Total { get; set; }
     public virtual User? User { get; set; }
 

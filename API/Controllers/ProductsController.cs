@@ -1,5 +1,6 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.ViewModels.ProductVM;
 using Services.IServices;
@@ -12,9 +13,9 @@ namespace API.Controllers
     {
         private readonly IBaseService<PostProductVM, PostProductVM, GetProductsVM, Product> _baseService = baseService;
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts(string productId)
         {
-            IEnumerable<GetProductsVM> result = await _baseService.GetAsync();
+            IEnumerable<GetProductsVM> result = await _baseService.GetAsync(include: o => o.Include(r => r.OrderDetails), filter: o => o.Id == productId);
             return Ok(new BaseResponseModel<IEnumerable<GetProductsVM>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

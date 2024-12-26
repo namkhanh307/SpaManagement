@@ -71,7 +71,7 @@ namespace Services.Services
             }
             User newUser = new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString("N"),
                 FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
                 PasswordHash = HashPasswordService.HashPasswordThrice(model.Password),

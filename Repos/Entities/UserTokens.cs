@@ -2,7 +2,7 @@
 
 namespace Repos.Entities
 {
-    public class UserTokens : IdentityUserToken<Guid>
+    public class UserTokens : IdentityUserToken<string>
     {
         public string RefreshToken { get; set; } = string.Empty;
         public DateTime ExpiredTime { get; set; }

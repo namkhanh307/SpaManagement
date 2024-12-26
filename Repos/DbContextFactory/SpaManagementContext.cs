@@ -5,7 +5,7 @@ using Repos.Entities;
 
 namespace Repos.DbContextFactory;
 
-public partial class SpaManagementContext : IdentityDbContext<User, Role, Guid, UserClaims, UserRoles, UserLogins, RoleClaim, UserTokens>
+public partial class SpaManagementContext : IdentityDbContext<User, Role, string, UserClaims, UserRoles, UserLogins, RoleClaim, UserTokens>
 {
     public SpaManagementContext()
     {

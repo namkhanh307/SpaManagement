@@ -2,7 +2,7 @@
 
 namespace Repos.Entities
 {
-    public class Role : IdentityRole<Guid>
+    public class Role : IdentityRole<string>
     {
         public string? FullName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
