@@ -11,6 +11,7 @@ namespace API.Middleware
         private readonly ILogger<PermissionHandlingMiddleware> _logger;
         private readonly IEnumerable<string> _excludedUris;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly Dictionary<string, List<string>> _rolePermissions;
 
 
         public PermissionHandlingMiddleware(RequestDelegate next, ILogger<PermissionHandlingMiddleware> logger, IHttpContextAccessor contextAccessor)
@@ -21,8 +22,14 @@ namespace API.Middleware
             {
                 "/api/Auth/SignIn",
                 "/api/Auth/SignUp",
+                "api/Auth/ChangePassword"
             };
             _contextAccessor = contextAccessor;
+            _rolePermissions = new Dictionary<string, List<string>>()
+            {
+                { "Staff", new List<string> {"/api/Products/", "/api/Orders" } },
+                { "User", new List<string> { "/api/Products/Get" } }
+            };
         }
 
         public async Task Invoke(HttpContext context, IUnitOfWork unitOfWork)
@@ -46,17 +53,14 @@ namespace API.Middleware
         {
             string requestUri = context.Request.Path.Value ?? "";
             if (_excludedUris.Contains(requestUri) || !requestUri.StartsWith("/api/")) return true;
-            string idUser = "";
-            if (_contextAccessor != null)
-            {
-                idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            }
             try
             {
                 {
-                    if (idUser != null)
+                    string userRole = Authentication.GetUserRoleFromHttpContext(context);
+                    if (userRole == "Manager") return true;
+                    if (_rolePermissions.TryGetValue(userRole, out var allowedControllers))
                     {
-                        return true;
+                        return allowedControllers.Any(uri => requestUri.StartsWith(uri, System.StringComparison.OrdinalIgnoreCase));
                     }
                     return false;
                 }

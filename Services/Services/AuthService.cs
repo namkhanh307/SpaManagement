@@ -12,12 +12,13 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class AuthService(IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService) : IAuthService
+    public class AuthService(IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService, UserManager<User> userManager) : IAuthService
     {
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ITokenService _tokenService = tokenService;
+        private readonly UserManager<User> _userManager = userManager;
 
         public async Task ChangePassword(ChangePasswordVM model)
         {
@@ -75,8 +76,10 @@ namespace Services.Services
                 FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
                 PasswordHash = HashPasswordService.HashPasswordThrice(model.Password),
+                SecurityStamp = Guid.NewGuid().ToString("N")
             };
             await _unitOfWork.GetRepo<User>().Insert(newUser);
+            await _userManager.AddToRoleAsync(newUser, "User");
             await _unitOfWork.Save();
         }
     }
