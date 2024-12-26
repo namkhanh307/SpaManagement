@@ -2,7 +2,7 @@
 
 namespace Repos.Entities
 {
-    public class UserClaims : IdentityUserClaim<Guid>
+    public class UserClaims : IdentityUserClaim<string>
     {
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }

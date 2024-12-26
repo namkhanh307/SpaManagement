@@ -72,7 +72,7 @@ namespace Services.Services
             {
                 UserTokens newUserToken = new()
                 {
-                    UserId = Guid.Parse(userId),
+                    UserId = userId,
                     LoginProvider = "JWT",
                     Name = "RefreshToken",
                     RefreshToken = refreshTokenString,

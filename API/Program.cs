@@ -21,10 +21,12 @@ namespace API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
-
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new TimeOnlySwaggerConverter());
+                }); ;
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -62,7 +64,6 @@ namespace API
                     }
                 });
             });
-
             //Add DBContext
             builder.Services.AddDbContext<SpaManagementContext>(options =>
                 options.UseSqlServer(
@@ -76,11 +77,12 @@ namespace API
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-
             //Add Automapper
-
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
-
+            builder.Services.AddAutoMapper(typeof(OrderDetailProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(OrderProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(ScheduleProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
             //Add Authentication
             builder.Services.AddAuthentication(options =>
             {

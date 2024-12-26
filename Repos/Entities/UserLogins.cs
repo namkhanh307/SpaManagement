@@ -2,7 +2,7 @@
 
 namespace Repos.Entities
 {
-    public class UserLogins : IdentityUserLogin<Guid>
+    public class UserLogins : IdentityUserLogin<string>
     {
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }

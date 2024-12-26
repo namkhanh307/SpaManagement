@@ -2,7 +2,7 @@
 
 namespace Repos.Entities
 {
-    public class User : IdentityUser<Guid>
+    public class User : IdentityUser<string>
     {
         public string FullName { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

@@ -2,7 +2,7 @@
 
 namespace Repos.Entities
 {
-    public class UserRoles : IdentityUserRole<Guid>
+    public class UserRoles : IdentityUserRole<string>
     {
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
