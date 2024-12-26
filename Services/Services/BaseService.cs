@@ -17,10 +17,11 @@ namespace Services.Services
         private readonly IMapper _mapper = mapper;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        public async Task<IEnumerable<TGetModel>> GetAsync(Func<IQueryable<T>, IQueryable<T>>? include = null, Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null)
+        public async Task<PagingVM<TGetModel>> GetAsync(Func<IQueryable<T>, IQueryable<T>>? include = null, Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int pageNumber = 1, int pageSize = 10)
         {
             string currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
             IQueryable<T> query = _unitOfWork.GetRepo<T>().Entities;
+
             if (include != null)
             {
                 query = include(query);
@@ -33,25 +34,31 @@ namespace Services.Services
             {
                 query = orderBy(query);
             }
-            var entities = await query.ToListAsync();
-            var response = entities.Select(item =>
+
+            var totalItems = query.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var entities = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var response = new List<TGetModel>();
+            foreach (var item in entities)
             {
                 var result = _mapper.Map<TGetModel>(item);
-                Task<User?> user = _unitOfWork.GetRepo<User>().GetById(item.CreatedBy ?? "");
-                result.CreatedBy = user.Result != null ? user.Result.FullName : "";
-                if (item.CreatedBy == currentUserId)
-                {
-                    dynamic dynamicResult = result as dynamic;
-                    if (dynamicResult != null)
-                    {
-                        dynamicResult.CanDelete = true;
-                        dynamicResult.CanUpdate = true;
-                    }
-                }
-                return result;
-            });
-            return response;
+
+                var user = await _unitOfWork.GetRepo<User>().GetById(item.CreatedBy ?? "");
+                result.CreatedBy = user?.FullName ?? "";
+                response.Add(result);
+            }
+
+            return new PagingVM<TGetModel>
+            {
+                List = response,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+            };
         }
+
 
         public async Task<TGetModel> GetByIdAsync(string id, Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
