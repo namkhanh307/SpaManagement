@@ -398,3 +398,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+# Ignore migrations folder
+Migrations/
+
+# Ignore appsettings file
+appsettings.json
