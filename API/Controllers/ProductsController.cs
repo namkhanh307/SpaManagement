@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController(IBaseService<PostProductVM, PostProductVM, GetProductsVM, Product> baseService) : ControllerBase
+    public class ProductsController(IBaseService<PostProductVM, PutProductsVM, GetProductsVM, Product> baseService) : ControllerBase
     {
         private readonly IBaseService<PostProductVM, PostProductVM, GetProductsVM, Product> _baseService = baseService;
         [HttpGet("get")]
@@ -31,5 +31,24 @@ namespace API.Controllers
                 code: ResponseCodeConstants.SUCCESS,
                 data: "Thêm sản phẩm mới thành công"));
         }
+        [HttpPut]
+        public async Task<IActionResult> PutProduct(string id,PutProductsVM model)
+        {
+            await _baseService.PutAsync(id,model); 
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Sửa sản phẩm mới thành công"));
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProduct(string id)
+        {
+            await _baseService.DeleteAsync(id);
+            return Ok(new BaseResponseModel<string>(
+              statusCode: StatusCodes.Status200OK,
+              code: ResponseCodeConstants.SUCCESS,
+              data: "Xóa sản phẩm thành công"));
+        }
     }
+    
 }

@@ -12,8 +12,13 @@ using Repos.DbContextFactory;
 namespace Repos.Migrations
 {
     [DbContext(typeof(SpaManagementContext))]
+<<<<<<<< HEAD:Repos/Migrations/20241226073828_init.Designer.cs
     [Migration("20241226073828_init")]
     partial class init
+========
+    [Migration("20241228104536_update")]
+    partial class update
+>>>>>>>> origin/trinh-do:Repos/Migrations/20241228104536_update.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

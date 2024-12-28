@@ -80,6 +80,8 @@ namespace API
             //Add Automapper
 
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(ServiceProfile).Assembly);
+
 
             //Add Authentication
             builder.Services.AddAuthentication(options =>

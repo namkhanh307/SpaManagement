@@ -10,6 +10,7 @@ namespace Services.Mappers
         {
             CreateMap<Product, GetProductsVM>().ReverseMap();
             CreateMap<Product, PostProductVM>().ReverseMap();
+            CreateMap<Product , PutProductsVM>().ReverseMap(); 
         }
     }
 }
