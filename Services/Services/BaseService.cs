@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.IRepos;
@@ -11,16 +12,17 @@ using ModelValidator = Core.Infrastructures.ModelValidator;
 
 namespace Services.Services
 {
-    public class BaseService<TPostModel, TPutModel, TGetModel, T>(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IBaseService<TPostModel, TPutModel, TGetModel, T> where TPostModel : class where TPutModel : class where TGetModel : BaseVM where T : BaseEntity
+    public class BaseService<TPostModel, TPutModel, TGetModel, T>(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IBaseService<TPostModel, TPutModel, TGetModel, T> where TPostModel : class where TPutModel : class where TGetModel : BaseVM where T : class
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        public async Task<IEnumerable<TGetModel>> GetAsync(Func<IQueryable<T>, IQueryable<T>>? include = null, Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null)
+        public async Task<PagingVM<TGetModel>> GetAsync(Func<IQueryable<T>, IQueryable<T>>? include = null, Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int pageNumber = 1, int pageSize = 10)
         {
             string currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
             IQueryable<T> query = _unitOfWork.GetRepo<T>().Entities;
+
             if (include != null)
             {
                 query = include(query);
@@ -33,25 +35,38 @@ namespace Services.Services
             {
                 query = orderBy(query);
             }
-            var entities = await query.ToListAsync();
-            var response = entities.Select(item =>
+
+            var totalItems = query.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var entities = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var response = new List<TGetModel>();
+            foreach (var item in entities)
             {
                 var result = _mapper.Map<TGetModel>(item);
-                Task<User?> user = _unitOfWork.GetRepo<User>().GetById(item.CreatedBy ?? "");
-                result.CreatedBy = user.Result != null ? user.Result.FullName : "";
-                if (item.CreatedBy == currentUserId)
+                if(item is BaseEntity baseEntity)
                 {
-                    dynamic dynamicResult = result as dynamic;
-                    if (dynamicResult != null)
-                    {
-                        dynamicResult.CanDelete = true;
-                        dynamicResult.CanUpdate = true;
-                    }
+                    var user = await _unitOfWork.GetRepo<User>().GetById(baseEntity.CreatedBy ?? "");
+                    result.CreatedBy = user?.FullName ?? "";
                 }
-                return result;
-            });
-            return response;
+                if (item is IHasAttribute hasAttribute)
+                {
+                    var user = await _unitOfWork.GetRepo<User>().GetById(hasAttribute.CreatedBy ?? "");
+                    result.GetType().GetProperty("CreatedBy")?.SetValue(result, user?.FullName ?? "");
+                }
+                response.Add(result);
+            }
+
+            return new PagingVM<TGetModel>
+            {
+                List = response,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+            };
         }
+
 
         public async Task<TGetModel> GetByIdAsync(string id, Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
@@ -63,8 +78,16 @@ namespace Services.Services
             T? result = await query.FirstOrDefaultAsync(e => EF.Property<string>(e, "Id") == id);
             if (result != null)
             {
-                Task<User?> user = _unitOfWork.GetRepo<User>().GetById(result.CreatedBy != null ? result.CreatedBy : "");
-                result.CreatedBy = user.Result != null ? user.Result.FullName : "";
+                if(result is BaseEntity baseEntity)
+                {
+                    Task<User?> user = _unitOfWork.GetRepo<User>().GetById(baseEntity.CreatedBy != null ? baseEntity.CreatedBy : "");
+                    baseEntity.CreatedBy = user.Result != null ? user.Result.FullName : "";
+                }
+                if (result is IHasAttribute hasAttribute)
+                {
+                    var user = await _unitOfWork.GetRepo<User>().GetById(hasAttribute.CreatedBy ?? "");
+                    result.GetType().GetProperty("CreatedBy")?.SetValue(result, user?.FullName ?? "");
+                }
                 return _mapper.Map<TGetModel>(result);
             }
             else
@@ -80,11 +103,17 @@ namespace Services.Services
             try
             {
                 ModelValidator.ValidateModel(model);
-                var entity = _mapper.Map<T>(model);
+                T entity = _mapper.Map<T>(model);
                 if (entity is BaseEntity baseEntity)
                 {
                     baseEntity.CreatedBy = currentUserId;
                     baseEntity.CreatedAt = DateTime.Now;
+                }
+                if (entity is IHasAttribute hasAttribute)
+                {
+                    hasAttribute.GetType().GetProperty("CreatedBy")?.SetValue(hasAttribute, currentUserId);
+                    hasAttribute.GetType().GetProperty("CreatedAt")?.SetValue(hasAttribute, DateTime.Now);
+
                 }
                 await _unitOfWork.GetRepo<T>().Insert(entity);
                 await _unitOfWork.Save();
@@ -108,6 +137,10 @@ namespace Services.Services
                 if (entity is BaseEntity baseEntity)
                 {
                     baseEntity.UpdatedBy = currentUserId;
+                }
+                if (entity is IHasAttribute hasAttribute)
+                {
+                    hasAttribute.GetType().GetProperty("UpdatedBy")?.SetValue(hasAttribute, currentUserId);
                 }
                 await repository.Update(entity);
                 await _unitOfWork.Save();

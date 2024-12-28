@@ -1,12 +1,9 @@
-namespace Repos.ViewModels.ProductVM
+﻿namespace Repos.ViewModels.ProductVM
 {
-    public class GetProductsVM : BaseVM
+    public class PutProductVM
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int Quantity { get; set; }
-        public string url { get; set; } = string.Empty;
-
-
     }
 }

@@ -2,7 +2,7 @@
 
 public partial class UserSchedule : BaseEntity
 {
-    public string UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public string ScheduleId { get; set; } = string.Empty;
     public string SalaryId { get; set; } = string.Empty;
     public TimeOnly? StartTime { get; set; }

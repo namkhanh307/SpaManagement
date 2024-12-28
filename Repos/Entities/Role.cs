@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Repos.ViewModels;
 
 namespace Repos.Entities
 {
-    public class Role : IdentityRole<string>
+    public class Role : IdentityRole<string>, IHasAttribute
     {
         public string? FullName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -12,8 +13,12 @@ namespace Repos.Entities
         public string? UpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
         public bool? Status { get; set; }
-        //public virtual ICollection<UserRoles> UserRoles { get; set; } = new List<UserRoles>();
-
+        public Role()
+        {
+            Id = Guid.NewGuid().ToString("N");
+            CreatedAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
+        }
 
     }
 }

@@ -83,6 +83,9 @@ namespace API
             builder.Services.AddAutoMapper(typeof(OrderProfile).Assembly);
             builder.Services.AddAutoMapper(typeof(ScheduleProfile).Assembly);
             builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(ServiceProfile).Assembly);
+
+
             //Add Authentication
             builder.Services.AddAuthentication(options =>
             {

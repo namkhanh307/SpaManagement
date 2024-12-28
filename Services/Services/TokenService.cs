@@ -1,5 +1,6 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,7 +19,9 @@ namespace Services.Services
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUnitOfWork _unitOfWork;
-        public TokenService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
+        private readonly UserManager<User> _userManager;
+
+        public TokenService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, UserManager<User> userManager)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -26,16 +29,22 @@ namespace Services.Services
             _configuration = builder.Build();
             _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;
+            _userManager = userManager; 
         }
 
         public async Task<GetTokensVM> GenerateTokens(string userId, DateTime? expiredTime)
         {
-            DateTime now = DateTime.UtcNow;
-
-            // Common claims for both tokens
+            DateTime now = DateTime.Now;
+            User? user = await _unitOfWork.GetRepo<User>().GetById(userId) ?? throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Người dùng không tồn tại!");
+            Task<IList<string>>? role = _userManager.GetRolesAsync(user);
+            if(role.Result.Count == 0)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Vai trò không tồn tại!");
+            }
             var claims = new List<Claim>
             {
-                new("id", userId.ToString())
+                new("id", userId.ToString()),
+                new("role", role.Result.FirstOrDefault()!)
             };
             int expiredMinutes = int.Parse(_configuration["JWT:AccessTokenExpirationMinutes"]!);
             int expiredDays = int.Parse(_configuration["JWT:RefreshTokenExpirationDays"]!);
