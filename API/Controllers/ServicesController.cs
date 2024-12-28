@@ -1,7 +1,6 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Repos.Entities;
-using Repos.ViewModels.ProductVM;
 using Repos.ViewModels.ServiceVM;
 using Services.IServices;
 
@@ -22,7 +21,7 @@ namespace API.Controllers
               data: result));
         }
         [HttpPost]
-        public async Task<IActionResult> PostSerice(PostServicesVM model)
+        public async Task<IActionResult> PostService(PostServicesVM model)
         {
             await _baseService.PostAsync(model);
             return Ok(new BaseResponseModel<string>(

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Repos.ViewModels.ServiceVM
+﻿namespace Repos.ViewModels.ServiceVM
 {
-    public class GetServicesVM
+    public class GetServicesVM : BaseVM
     {
         public string Name { get; set; } = string.Empty;
         public string Duration { get; set; } = string.Empty;

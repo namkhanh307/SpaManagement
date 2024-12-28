@@ -12,8 +12,8 @@ using Repos.DbContextFactory;
 namespace Repos.Migrations
 {
     [DbContext(typeof(SpaManagementContext))]
-    [Migration("20241226023202_init")]
-    partial class init
+    [Migration("20241228104536_update")]
+    partial class update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -618,11 +618,18 @@ namespace Repos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("EndPrice")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
+                    b.Property<double>("StartPrice")
                         .HasColumnType("float");
 
                     b.Property<bool?>("Status")
