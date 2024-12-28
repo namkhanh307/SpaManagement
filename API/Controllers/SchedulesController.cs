@@ -1,6 +1,7 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Repos.Entities;
+using Repos.ViewModels;
 using Repos.ViewModels.ScheduleVM;
 using Services.IServices;
 
@@ -27,10 +28,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSchedules()
+        public async Task<IActionResult> GetSchedules(int pageNumber = 1, int pageSize = 10)
         {
-            IEnumerable<GetScheduleVM> result = await _baseService.GetAsync();
-            return Ok(new BaseResponseModel<IEnumerable<GetScheduleVM>>(
+            PagingVM<GetScheduleVM> result = await _baseService.GetAsync(null, null, null, pageNumber, pageSize);
+            return Ok(new BaseResponseModel<PagingVM<GetScheduleVM>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
+using Repos.ViewModels;
 using Repos.ViewModels.OrderVM;
 using Services.IServices;
 
@@ -28,10 +29,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOrders(string? userId)
+        public async Task<IActionResult> GetOrders(int pageNumber = 1, int pageSize = 10, string? userId = null)
         {
-            IEnumerable<GetOrdersVM> result = await _baseService.GetAsync(o => o.Include(a => a.User).Include(a => a.OrderDetails), o => o.UserId == userId, o => o.OrderBy(opt => opt.CreatedAt));
-            return Ok(new BaseResponseModel<IEnumerable<GetOrdersVM>>(
+            PagingVM<GetOrdersVM> result = await _baseService.GetAsync(o => o.Include(a => a.User).Include(a => a.OrderDetails), o => o.UserId == userId, o => o.OrderBy(opt => opt.CreatedAt), pageNumber, pageSize);
+            return Ok(new BaseResponseModel<PagingVM<GetOrdersVM>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
