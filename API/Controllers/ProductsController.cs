@@ -10,9 +10,9 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController(IBaseService<PostProductVM, PutProductsVM, GetProductsVM, Product> baseService) : ControllerBase
+    public class ProductsController(IBaseService<PostProductVM, PutProductVM, GetProductsVM, Product> baseService) : ControllerBase
     {
-        private readonly IBaseService<PostProductVM, PostProductVM, GetProductsVM, Product> _baseService = baseService;
+        private readonly IBaseService<PostProductVM, PutProductVM, GetProductsVM, Product> _baseService = baseService;
         [HttpGet("get")]
         public async Task<IActionResult> GetProducts(int pageNumber = 1, int pageSize = 10)
         {
@@ -32,9 +32,9 @@ namespace API.Controllers
                 data: "Thêm sản phẩm mới thành công"));
         }
         [HttpPut]
-        public async Task<IActionResult> PutProduct(string id,PutProductsVM model)
+        public async Task<IActionResult> PutProduct(string id,PutProductVM model)
         {
-            await _baseService.PutAsync(id,model); 
+            await _baseService.PutAsync(id, model); 
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

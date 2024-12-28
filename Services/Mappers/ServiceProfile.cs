@@ -15,8 +15,8 @@ namespace Services.Mappers
         public ServiceProfile()
         {
             CreateMap<Service, GetServicesVM>().ReverseMap();
-            CreateMap<Service, PostServicesVM>().ReverseMap();
-            CreateMap<Service, PutServicesVM>().ReverseMap();
+            CreateMap<Service, PostServiceVM>().ReverseMap();
+            CreateMap<Service, PutServiceVM>().ReverseMap();
         }
     }
 }

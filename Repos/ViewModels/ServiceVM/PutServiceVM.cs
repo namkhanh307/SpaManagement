@@ -1,6 +1,6 @@
 ﻿namespace Repos.ViewModels.ServiceVM
 {
-    public class PutServicesVM
+    public class PutServiceVM
     {
         public string Name { get; set; } = string.Empty;
         public string Duration { get; set; } = string.Empty;
