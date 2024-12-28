@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.IRepos;
@@ -11,7 +12,7 @@ using ModelValidator = Core.Infrastructures.ModelValidator;
 
 namespace Services.Services
 {
-    public class BaseService<TPostModel, TPutModel, TGetModel, T>(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IBaseService<TPostModel, TPutModel, TGetModel, T> where TPostModel : class where TPutModel : class where TGetModel : BaseVM where T : BaseEntity
+    public class BaseService<TPostModel, TPutModel, TGetModel, T>(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IBaseService<TPostModel, TPutModel, TGetModel, T> where TPostModel : class where TPutModel : class where TGetModel : BaseVM where T : class
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
@@ -44,9 +45,16 @@ namespace Services.Services
             foreach (var item in entities)
             {
                 var result = _mapper.Map<TGetModel>(item);
-
-                var user = await _unitOfWork.GetRepo<User>().GetById(item.CreatedBy ?? "");
-                result.CreatedBy = user?.FullName ?? "";
+                if(item is BaseEntity baseEntity)
+                {
+                    var user = await _unitOfWork.GetRepo<User>().GetById(baseEntity.CreatedBy ?? "");
+                    result.CreatedBy = user?.FullName ?? "";
+                }
+                if (item is IHasAttribute hasAttribute)
+                {
+                    var user = await _unitOfWork.GetRepo<User>().GetById(hasAttribute.CreatedBy ?? "");
+                    result.GetType().GetProperty("CreatedBy")?.SetValue(result, user?.FullName ?? "");
+                }
                 response.Add(result);
             }
 
@@ -70,8 +78,16 @@ namespace Services.Services
             T? result = await query.FirstOrDefaultAsync(e => EF.Property<string>(e, "Id") == id);
             if (result != null)
             {
-                Task<User?> user = _unitOfWork.GetRepo<User>().GetById(result.CreatedBy != null ? result.CreatedBy : "");
-                result.CreatedBy = user.Result != null ? user.Result.FullName : "";
+                if(result is BaseEntity baseEntity)
+                {
+                    Task<User?> user = _unitOfWork.GetRepo<User>().GetById(baseEntity.CreatedBy != null ? baseEntity.CreatedBy : "");
+                    baseEntity.CreatedBy = user.Result != null ? user.Result.FullName : "";
+                }
+                if (result is IHasAttribute hasAttribute)
+                {
+                    var user = await _unitOfWork.GetRepo<User>().GetById(hasAttribute.CreatedBy ?? "");
+                    result.GetType().GetProperty("CreatedBy")?.SetValue(result, user?.FullName ?? "");
+                }
                 return _mapper.Map<TGetModel>(result);
             }
             else
@@ -87,11 +103,17 @@ namespace Services.Services
             try
             {
                 ModelValidator.ValidateModel(model);
-                var entity = _mapper.Map<T>(model);
+                T entity = _mapper.Map<T>(model);
                 if (entity is BaseEntity baseEntity)
                 {
                     baseEntity.CreatedBy = currentUserId;
                     baseEntity.CreatedAt = DateTime.Now;
+                }
+                if (entity is IHasAttribute hasAttribute)
+                {
+                    hasAttribute.GetType().GetProperty("CreatedBy")?.SetValue(hasAttribute, currentUserId);
+                    hasAttribute.GetType().GetProperty("CreatedAt")?.SetValue(hasAttribute, DateTime.Now);
+
                 }
                 await _unitOfWork.GetRepo<T>().Insert(entity);
                 await _unitOfWork.Save();
@@ -115,6 +137,10 @@ namespace Services.Services
                 if (entity is BaseEntity baseEntity)
                 {
                     baseEntity.UpdatedBy = currentUserId;
+                }
+                if (entity is IHasAttribute hasAttribute)
+                {
+                    hasAttribute.GetType().GetProperty("UpdatedBy")?.SetValue(hasAttribute, currentUserId);
                 }
                 await repository.Update(entity);
                 await _unitOfWork.Save();

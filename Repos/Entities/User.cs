@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Repos.ViewModels;
 
 namespace Repos.Entities
 {
-    public class User : IdentityUser<string>
+    public class User : IdentityUser<string>, IHasAttribute
     {
         public string FullName { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -17,9 +18,10 @@ namespace Repos.Entities
         public virtual ICollection<SalaryPerHour> SalaryPerHours { get; set; } = new List<SalaryPerHour>();
         public virtual ICollection<UserSchedule> UserSchedules { get; set; } = new List<UserSchedule>();
         public virtual ICollection<Salary> Salaries { get; set; } = new List<Salary>();
-        //public virtual ICollection<UserRoles> UserRoles { get; set; } = new List<UserRoles>();
+
         public User()
         {
+            Id = Guid.NewGuid().ToString("N");
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;
         }

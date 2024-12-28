@@ -9,6 +9,7 @@ namespace Services.Mappers
         public UserProfile()
         {
             CreateMap<GetUsersVM, User>().ReverseMap();
+            CreateMap<PostUserVM, User>().ReverseMap();
 
         }
     }
