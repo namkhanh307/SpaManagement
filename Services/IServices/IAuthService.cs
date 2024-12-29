@@ -8,6 +8,6 @@ namespace Services.IServices
         Task ChangePassword(ChangePasswordVM model);
         Task<GetUsersVM> GetInfo();
         Task<GetSignInVM> SignIn(PostSignInVM model);
-        Task SignUp(PostSignUpVM model);
+        Task SignUp(PostSignUpVM model, string role);
     }
 }

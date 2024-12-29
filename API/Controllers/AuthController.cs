@@ -16,7 +16,7 @@ namespace API.Controllers
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(PostSignUpVM model)
         {
-            await _authService.SignUp(model);
+            await _authService.SignUp(model, "User");
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
