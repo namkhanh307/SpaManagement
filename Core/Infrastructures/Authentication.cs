@@ -63,7 +63,7 @@ namespace Core.Infrastructures
             {
                 Console.WriteLine("Token validation failed: " + ex.Message);
                 return false;
-            }   
+            }
         }
 
 

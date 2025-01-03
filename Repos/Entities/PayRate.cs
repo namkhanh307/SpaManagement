@@ -1,6 +1,6 @@
 ﻿namespace Repos.Entities;
 
-public partial class SalaryPerHour : BaseEntity
+public partial class PayRate : BaseEntity
 {
     public string UserId { get; set; } = string.Empty;
     public double Amount { get; set; }

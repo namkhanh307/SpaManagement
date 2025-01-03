@@ -10,7 +10,7 @@ namespace Services.Mappers
         {
             CreateMap<PostOrderVM, Order>().ReverseMap();
             CreateMap<GetOrdersVM, Order>().ReverseMap();
-            
+
         }
     }
 }

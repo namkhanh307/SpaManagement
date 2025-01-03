@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

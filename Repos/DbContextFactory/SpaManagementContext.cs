@@ -30,7 +30,7 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, string
     public virtual DbSet<Product> Products => Set<Product>();
     public virtual DbSet<ProductImage> ProductImages => Set<ProductImage>();
     public virtual DbSet<Salary> Salaries => Set<Salary>();
-    public virtual DbSet<SalaryPerHour> SalaryPerHours => Set<SalaryPerHour>();
+    public virtual DbSet<PayRate> SalaryPerHours => Set<PayRate>();
     public virtual DbSet<Schedule> Schedules => Set<Schedule>();
     public virtual DbSet<Service> Services => Set<Service>();
     public virtual DbSet<ServiceImage> ServiceImages => Set<ServiceImage>();
@@ -135,7 +135,7 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, string
                .HasForeignKey(d => d.UserId);
         });
 
-        modelBuilder.Entity<SalaryPerHour>(entity =>
+        modelBuilder.Entity<PayRate>(entity =>
         {
             entity.HasKey(e => e.Id);
 
@@ -166,7 +166,7 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, string
         modelBuilder.Entity<UserSchedule>(entity =>
         {
             entity.HasKey(e => e.Id);
-          
+
 
             entity.HasOne(d => d.Schedule)
                 .WithMany(s => s.UserSchedules)
