@@ -33,6 +33,8 @@ namespace API
             
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddIdentity<User, Role>(options => { }).AddEntityFrameworkStores<SpaManagementContext>().AddDefaultTokenProviders();
+
             var app = builder.Build();
             Authentication.SecretKey = builder.Configuration["JWT:SecretKey"] ?? "";
             // Configure the HTTP request pipeline.
@@ -47,7 +49,6 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
             //Add Middleware
-            app.UseMiddleware<RefreshTokenMiddleware>();
             app.UseMiddleware<CustomExceptionHandlerMiddleware>();
             app.UseMiddleware<PermissionHandlingMiddleware>();
             app.MapControllers();

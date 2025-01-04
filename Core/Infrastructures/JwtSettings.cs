@@ -1,6 +1,6 @@
 namespace Core.Infrastructures
 {
-    public class JwtSettings
+    public class JWT
     {
         public string? SecretKey { get; set; }
         public string? Issuer { get; set; }

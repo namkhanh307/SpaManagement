@@ -1,5 +1,6 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
+using Repos.Entities;
 using Repos.ViewModels.AuthVM;
 using Repos.ViewModels.UserVM;
 using Services.IServices;
@@ -48,6 +49,16 @@ namespace API.Controllers
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: "Đổi mật khẩu thành công!"));
+        }
+
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken(string oldRT)
+        {
+            await _tokenService.RefreshToken(oldRT);
+            return Ok(new BaseResponseModel<string>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: "Đổi mật khẩu thành công!"));          
         }
     }
 }

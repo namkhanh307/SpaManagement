@@ -13,9 +13,9 @@ namespace NhaMayMay.Services
     {
         public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddServices(configuration);
             services.AddRepository();
             services.AddAutoMapper();
-            services.AddServices(configuration);
         }
         public static void AddRepository(this IServiceCollection services)
         {

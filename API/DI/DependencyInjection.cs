@@ -16,27 +16,27 @@ namespace NhaMayMay.API.DI
             services.AddAuthenJwt(configuration);
             services.AddDatabase(configuration);
             services.AddLoggings();
-            services.ConfigRoute();
+            //services.ConfigRoute();
             services.ConfigCors();
             //services.ConfigCorsSignalR();
             //services.RabbitMQConfig(configuration);
-            services.JwtSettingsConfig(configuration);
+            services.JWTConfig(configuration);
             services.IntSeedData();
         }
-        public static void JwtSettingsConfig(this IServiceCollection services, IConfiguration configuration)
+        public static void JWTConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(option =>
             {
-                JwtSettings jwtSettings = new JwtSettings
+                JWT JWT = new JWT
                 {
-                    SecretKey = configuration.GetValue<string>("JwtSettings:SecretKey"),
-                    Issuer = configuration.GetValue<string>("JwtSettings:Issuer"),
-                    Audience = configuration.GetValue<string>("JwtSettings:Audience"),
-                    AccessTokenExpirationMinutes = configuration.GetValue<int>("JwtSettings:AccessTokenExpirationMinutes"),
-                    RefreshTokenExpirationDays = configuration.GetValue<int>("JwtSettings:RefreshTokenExpirationDays")
+                    SecretKey = configuration.GetValue<string>("JWT:SecretKey"),
+                    Issuer = configuration.GetValue<string>("JWT:Issuer"),
+                    Audience = configuration.GetValue<string>("JWT:Audience"),
+                    AccessTokenExpirationMinutes = configuration.GetValue<int>("JWT:AccessTokenExpirationMinutes"),
+                    RefreshTokenExpirationDays = configuration.GetValue<int>("JWT:RefreshTokenExpirationDays")
                 };
-                jwtSettings.IsValid();
-                return jwtSettings;
+                JWT.IsValid();
+                return JWT;
             });
         }
         //public static void RabbitMQConfig(this IServiceCollection services, IConfiguration configuration)
@@ -95,7 +95,7 @@ namespace NhaMayMay.API.DI
         }
         public static void AddAuthenJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection("JwtSettings");
+            var JWT = configuration.GetSection("JWT");
             services.AddAuthentication(e =>
             {
                 e.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -108,9 +108,9 @@ namespace NhaMayMay.API.DI
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidAudience = jwtSettings["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]))
+                    ValidIssuer = JWT["Issuer"],
+                    ValidAudience = JWT["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWT["SecretKey"]))
 
                 };
                 e.SaveToken = true;
@@ -157,9 +157,9 @@ namespace NhaMayMay.API.DI
                 });
 
                 // Đọc các nhận xét XML
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                //c.IncludeXmlComments(xmlPath);
             });
 
             services.AddAuthorization(options =>

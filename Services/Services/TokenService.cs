@@ -97,7 +97,7 @@ namespace Services.Services
                 RefreshToken = refreshTokenString
             };
         }
-        public async Task<GetTokensVM> GenerateNewRefreshTokenAsync(string oldRefreshToken)
+        public async Task<GetTokensVM> RefreshToken(string oldRT)
         {
             var userId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
             if (string.IsNullOrWhiteSpace(userId))
@@ -105,7 +105,7 @@ namespace Services.Services
             DateTime expiredTime;
             try
             {
-                expiredTime = DecodeOldRefreshToken(oldRefreshToken);
+                expiredTime = DecodeOldRefreshToken(oldRT);
             }
             catch
             {
