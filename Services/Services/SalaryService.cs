@@ -1,3 +1,4 @@
+using Repos.ViewModels.SalaryVM;
 using Services.IServices;
 using System;
 using System.Collections.Generic;
@@ -9,5 +10,9 @@ namespace Services.Services
 {
     public class SalaryService : ISalaryService
     {
+        public Task PostAsync(PostSalaryVM model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
