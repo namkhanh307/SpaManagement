@@ -1,3 +1,4 @@
+using Repos.ViewModels.SalaryVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,5 +9,6 @@ namespace Services.IServices
 {
     public interface ISalaryService
     {
+        Task PostAsync(PostSalaryVM model);
     }
 }
