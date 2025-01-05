@@ -116,7 +116,7 @@ namespace Repos.DbContextFactory
                 {
                     UserName = "staff",
                     FullName = "Staff John",
-                    PhoneNumber = "0971931045",
+                    PhoneNumber = "staff",
                     EmailConfirmed = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
@@ -126,7 +126,7 @@ namespace Repos.DbContextFactory
                 {
                     UserName = "user",
                     FullName = "User Michael",
-                    PhoneNumber = "0792229418",
+                    PhoneNumber = "user",
                     EmailConfirmed = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
@@ -136,7 +136,7 @@ namespace Repos.DbContextFactory
                 {
                     UserName = "admin",
                     FullName = "Admin Nathan",
-                    PhoneNumber = "0796268219",
+                    PhoneNumber = "admin",
                     EmailConfirmed = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
@@ -144,9 +144,9 @@ namespace Repos.DbContextFactory
                 },
                 new User
                 {
-                    UserName = "Manager",
+                    UserName = "manager",
                     FullName = "Manager Nakyum",
-                    PhoneNumber = "0702592347",
+                    PhoneNumber = "manager",
                     EmailConfirmed = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     ConcurrencyStamp = Guid.NewGuid().ToString(),

@@ -15,7 +15,7 @@ namespace Repos.Entities
         public string? DeletedBy { get; set; }
         public bool? Status { get; set; }
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-        public virtual ICollection<PayRate> SalaryPerHours { get; set; } = new List<PayRate>();
+        public virtual ICollection<PayRate> PayRates { get; set; } = new List<PayRate>();
         public virtual ICollection<UserSchedule> UserSchedules { get; set; } = new List<UserSchedule>();
         public virtual ICollection<Salary> Salaries { get; set; } = new List<Salary>();
 

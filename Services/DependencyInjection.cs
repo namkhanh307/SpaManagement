@@ -31,6 +31,9 @@ namespace Services
             services.AddAutoMapper(typeof(ScheduleProfile).Assembly);
             services.AddAutoMapper(typeof(UserProfile).Assembly);
             services.AddAutoMapper(typeof(ServiceProfile).Assembly);
+            services.AddAutoMapper(typeof(PayRateProfile).Assembly);
+            services.AddAutoMapper(typeof(SalaryProfile).Assembly);
+
         }
         public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
