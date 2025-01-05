@@ -1,14 +1,14 @@
-﻿using API.Middleware;
+﻿using API.DI;
+using API.Middleware;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NhaMayMay.API.DI;
-using NhaMayMay.Services;
 using Repos.DbContextFactory;
 using Repos.Entities;
+using Services;
 using System.Text;
 
 namespace API

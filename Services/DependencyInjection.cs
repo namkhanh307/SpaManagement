@@ -2,12 +2,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Repos.IRepos;
 using Repos.Repos;
+using Services;
 using Services.IServices;
 using Services.Mappers;
 using Services.Services;
 using System.Reflection;
 
-namespace NhaMayMay.Services
+namespace Services
 {
     public static class DependencyInjection
     {

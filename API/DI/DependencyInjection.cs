@@ -6,7 +6,7 @@ using Repos.DbContextFactory;
 using System.Reflection;
 using System.Text;
 
-namespace NhaMayMay.API.DI
+namespace API.DI
 {
     public static class DependencyInjection
     {
