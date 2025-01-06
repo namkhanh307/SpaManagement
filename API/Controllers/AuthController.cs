@@ -57,7 +57,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Làm mới token thành công!"));                 
+                data: "Làm mới token thành công!"));
         }
     }
 }
