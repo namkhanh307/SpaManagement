@@ -185,6 +185,5 @@ namespace API.DI
             var initialiser = new SeedData(context);
             initialiser.Initialise();
         }
-
     }
 }

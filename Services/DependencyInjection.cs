@@ -33,7 +33,8 @@ namespace Services
             services.AddAutoMapper(typeof(ServiceProfile).Assembly);
             services.AddAutoMapper(typeof(PayRateProfile).Assembly);
             services.AddAutoMapper(typeof(SalaryProfile).Assembly);
-
+            services.AddAutoMapper(typeof(UserScheduleProfile).Assembly);
+            services.AddAutoMapper(typeof(TransactionProfile).Assembly);
         }
         public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
