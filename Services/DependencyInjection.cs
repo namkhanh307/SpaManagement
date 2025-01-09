@@ -41,6 +41,7 @@ namespace Services
             services.AddScoped(typeof(IBaseService<,,,>), typeof(BaseService<,,,>));
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ISalaryService, SalaryService>();
         }
     }
 }

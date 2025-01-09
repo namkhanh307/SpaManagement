@@ -2,6 +2,7 @@ namespace Repos.ViewModels.SalaryVM
 {
     public class PostSalaryVM
     {
-        public string? Month { get; set; }
+        public int Month { get; set; }
+        public string? UserId { get; set; }
     }
 }
