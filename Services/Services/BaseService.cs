@@ -96,24 +96,67 @@ namespace Services.Services
         }
 
 
-        public async Task PostAsync(TPostModel model)
+        public async Task PostAsync(TPostModel model, List<Dictionary<string, string>>? foreignKeyChecks)
         {
             string currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
             try
             {
+                // Validate the model
                 ModelValidator.ValidateModel(model);
+
+                // Map the model to the entity
                 T entity = _mapper.Map<T>(model);
+
+                // Perform foreign key checks
+                if (foreignKeyChecks != null)
+                {
+                    foreach (var check in foreignKeyChecks)
+                    {
+                        foreach (var (foreignKey, errorMessage) in check)
+                        {
+                            var foreignKeyProperty = entity.GetType().GetProperty(foreignKey);
+                            if (foreignKeyProperty != null)
+                            {
+                                var foreignKeyValue = foreignKeyProperty.GetValue(entity)?.ToString();
+
+                                if (!string.IsNullOrWhiteSpace(foreignKeyValue))
+                                {
+                                    // Retrieve the property name as a string
+                                    string foreignKeyPropertyName = foreignKeyProperty.Name;
+
+                                    // Check if the foreign key exists
+                                    bool foreignKeyExists = await _unitOfWork.GetRepo<T>().Entities
+                                        .AnyAsync(e => EF.Property<string>(e, foreignKeyPropertyName) == foreignKeyValue);
+
+                                    if (foreignKeyExists)
+                                    {
+                                        throw new ErrorException(
+                                            StatusCodes.Status409Conflict,
+                                            ErrorCode.Conflicted,
+                                            errorMessage.Replace("{Key}", foreignKey).Replace("{Value}", foreignKeyValue)
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Add created by and created at properties for auditable entities
                 if (entity is BaseEntity baseEntity)
                 {
                     baseEntity.CreatedBy = currentUserId;
                     baseEntity.CreatedAt = DateTime.Now;
                 }
+
                 if (entity is IHasAttribute hasAttribute)
                 {
                     hasAttribute.GetType().GetProperty("CreatedBy")?.SetValue(hasAttribute, currentUserId);
                     hasAttribute.GetType().GetProperty("CreatedAt")?.SetValue(hasAttribute, DateTime.Now);
-
                 }
+
+                // Insert the entity and save changes
                 await _unitOfWork.GetRepo<T>().Insert(entity);
                 await _unitOfWork.Save();
             }
@@ -122,6 +165,7 @@ namespace Services.Services
                 BaseService<TPostModel, TPutModel, TGetModel, T>.HandleDbUpdateException(ex, typeof(T));
             }
         }
+
 
 
         public async Task PutAsync(string id, TPutModel model)

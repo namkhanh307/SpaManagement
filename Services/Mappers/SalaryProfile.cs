@@ -8,7 +8,7 @@ namespace Services.Mappers
     {
         public SalaryProfile()
         {
-            CreateMap<GetSalariesVM, Salary>().ReverseMap();
+            CreateMap<GetSalariesVM, Salary>().ReverseMap().ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User != null ? src.User.FullName : string.Empty));
             CreateMap<PostSalaryVM, Salary>().ReverseMap();
 
         }

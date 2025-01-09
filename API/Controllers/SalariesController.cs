@@ -15,9 +15,9 @@ namespace API.Controllers
         private readonly IBaseService<PostSalaryVM, PutSalaryVM, GetSalariesVM, Salary> _baseService = baseService;
         private readonly ISalaryService _salaryService = salaryService;
         [HttpGet("get")]
-        public async Task<IActionResult> GetSalaries(int pageNumber = 1, int pageSize = 10, string? userId = null, string? month = null)
+        public async Task<IActionResult> GetSalaries(int pageNumber = 1, int pageSize = 10, string? userId = null, int? month = null, int? year = null)
         {
-            PagingVM<GetSalariesVM> result = await _baseService.GetAsync(include: o => o.Include(r => r.User), filter: o => o.UserId == userId || string.IsNullOrWhiteSpace(userId), null, pageNumber, pageSize);
+            PagingVM<GetSalariesVM> result = await _baseService.GetAsync(include: o => o.Include(r => r.User), filter: o => (o.UserId == userId || string.IsNullOrWhiteSpace(userId)) && (o.Month == month || month == null) && (o.Year == year || year == null), null, pageNumber, pageSize);
             return Ok(new BaseResponseModel<PagingVM<GetSalariesVM>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

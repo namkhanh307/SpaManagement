@@ -26,7 +26,13 @@ namespace API.Controllers
         [HttpPost("post")]
         public async Task<IActionResult> PostPayRate(PostPayRateVM model)
         {
-            await _baseService.PostAsync(model);
+            await _baseService.PostAsync(model,
+                [
+                    new Dictionary<string, string>
+                    {
+                        { "UserId", "Đã tồn tại lương cho người dùng này!" }
+                    }
+                ]);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
