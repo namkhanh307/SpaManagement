@@ -1,4 +1,6 @@
-﻿namespace Repos.IRepos
+﻿using Repos.Repos;
+
+namespace Repos.IRepos
 {
     public interface IUnitOfWork : IDisposable
     {

@@ -25,7 +25,6 @@ namespace API
             builder.Services.AddInfrastructure(builder.Configuration);
             //DI Services
             builder.Services.AddApplication(builder.Configuration);
-
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddIdentity<User, Role>(options => { }).AddEntityFrameworkStores<SpaManagementContext>().AddDefaultTokenProviders();

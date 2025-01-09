@@ -1,9 +1,13 @@
-﻿namespace Repos.ViewModels.UserScheduleVM
+﻿using Repos.Entities;
+
+namespace Repos.ViewModels.UserScheduleVM
 {
     public class GetUserScheduleVM : BaseVM
     {
-        public string UserId { get; set; } = string.Empty;
-        public string ScheduleId { get; set; } = string.Empty;
+        public string UserFullName { get; set; } = string.Empty;
+        public DateTime ScheduleDate { get; set; }
+        public TimeOnly ScheduleStartTime { get; set; }
+        public TimeOnly ScheduleEndTime { get; set; }
         public string SalaryId { get; set; } = string.Empty;
     }
 }

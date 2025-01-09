@@ -5,6 +5,7 @@ using Repos.ViewModels.ScheduleVM;
 using Repos.ViewModels;
 using Repos.ViewModels.UserScheduleVM;
 using Services.IServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -21,7 +22,7 @@ namespace API.Controllers
         [HttpGet("get")]
         public async Task<IActionResult> GetUserSchedule(int pageNumber = 1, int pageSize = 10)
         {
-            PagingVM<GetUserScheduleVM> result = await _baseService.GetAsync(null, null, null, pageNumber, pageSize);
+            PagingVM<GetUserScheduleVM> result = await _baseService.GetAsync(o => o.Include(a => a.User).Include(a => a.Schedule), null, null, pageNumber, pageSize);
             return Ok(new BaseResponseModel<PagingVM<GetUserScheduleVM>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

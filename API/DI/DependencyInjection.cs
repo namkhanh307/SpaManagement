@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Repos.DbContextFactory;
+using Repos.IRepos;
+using Repos.Repos;
 using System.Text;
 
 namespace API.DI
