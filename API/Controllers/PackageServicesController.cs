@@ -12,7 +12,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PackageService(IBaseService<PostPackageVM, PutPackageVM, GetPackagesVM, Package> baseService) : ControllerBase
+    public class PackageServicesController(IBaseService<PostPackageVM, PutPackageVM, GetPackagesVM, Package> baseService) : ControllerBase
     {
         private readonly IBaseService<PostPackageVM, PutPackageVM, GetPackagesVM, Package> _baseService = baseService;
         [HttpGet("get")]
@@ -36,7 +36,6 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> PutPackage(string id,PutPackageVM model)
         {
-            await _baseService.PutAsync(id, model);
             await _baseService.PutAsync(id, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
