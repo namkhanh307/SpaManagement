@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using Azure;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.IRepos;
-using Repos.ViewModels;
 using Repos.ViewModels.SalaryVM;
 using Services.IServices;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Services.Services
 {
@@ -17,7 +14,7 @@ namespace Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         public SalaryService(IUnitOfWork unitOfWork, IMapper mapper)
-        {          
+        {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -54,9 +51,9 @@ namespace Services.Services
                 Salary salary = new()
                 {
                     UserId = group.Key,
-                    Total = totalSalary,          
-                    Month = model.Month, 
-                    Year = model.Year                  
+                    Total = totalSalary,
+                    Month = model.Month,
+                    Year = model.Year
                 };
 
                 await _unitOfWork.GetRepo<Salary>().Insert(salary);

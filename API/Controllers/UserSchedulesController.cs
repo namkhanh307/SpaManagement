@@ -1,7 +1,6 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Repos.Entities;
-using Repos.ViewModels.ScheduleVM;
 using Repos.ViewModels;
 using Repos.ViewModels.UserScheduleVM;
 using Services.IServices;
@@ -10,7 +9,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserSchedulesController: ControllerBase
+    public class UserSchedulesController : ControllerBase
     {
         private readonly IBaseService<PostUserScheduleVM, PostUserScheduleVM, GetUserScheduleVM, UserSchedule> _baseService;
         public UserSchedulesController(IBaseService<PostUserScheduleVM, PostUserScheduleVM, GetUserScheduleVM, UserSchedule> baseService)
