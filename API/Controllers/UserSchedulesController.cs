@@ -31,7 +31,7 @@ namespace API.Controllers
         [HttpPost("post")]
         public async Task<IActionResult> PostUserSchedule(PostUserScheduleVM model)
         {
-            await _baseService.PostAsync(model);
+            await _baseService.PostAsync(model, null);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

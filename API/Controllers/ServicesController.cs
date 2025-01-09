@@ -24,7 +24,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostService(PostServiceVM model)
         {
-            await _baseService.PostAsync(model);
+            await _baseService.PostAsync(model, null);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

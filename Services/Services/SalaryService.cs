@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Azure;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.IRepos;
+using Repos.ViewModels;
 using Repos.ViewModels.SalaryVM;
 using Services.IServices;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Services.Services
 {
@@ -20,7 +23,7 @@ namespace Services.Services
         }
         public async Task PostAsync(PostSalaryVM model)
         {
-            Schedule? schedule = await _unitOfWork.GetRepo<Schedule>().Entities.Where(s => s.Date.Month == model.Month).FirstOrDefaultAsync() ?? throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Lich lam viec khong ton tai!");
+            Schedule? schedule = await _unitOfWork.GetRepo<Schedule>().Entities.Where(s => s.Date.Month == model.Month && s.Date.Year == model.Year).FirstOrDefaultAsync() ?? throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Lich lam viec khong ton tai!");
             List<UserSchedule> userSchedules = await _unitOfWork.GetRepo<UserSchedule>().Entities.Where(u => u.ScheduleId == schedule.Id).ToListAsync();
 
             var groupUserSchedules = userSchedules.GroupBy(u => u.UserId);
@@ -52,6 +55,8 @@ namespace Services.Services
                 {
                     UserId = group.Key,
                     Total = totalSalary,          
+                    Month = model.Month, 
+                    Year = model.Year                  
                 };
 
                 await _unitOfWork.GetRepo<Salary>().Insert(salary);
