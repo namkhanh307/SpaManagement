@@ -29,7 +29,7 @@ namespace Services.Services
             _configuration = builder.Build();
             _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;
-            _userManager = userManager; 
+            _userManager = userManager;
         }
 
         public async Task<GetTokensVM> GenerateTokens(string userId, DateTime? expiredTime)
@@ -37,7 +37,7 @@ namespace Services.Services
             DateTime now = DateTime.Now;
             User? user = await _unitOfWork.GetRepo<User>().GetById(userId) ?? throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Người dùng không tồn tại!");
             Task<IList<string>>? role = _userManager.GetRolesAsync(user);
-            if(role.Result.Count == 0)
+            if (role.Result.Count == 0)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Vai trò không tồn tại!");
             }
@@ -97,7 +97,7 @@ namespace Services.Services
                 RefreshToken = refreshTokenString
             };
         }
-        public async Task<GetTokensVM> GenerateNewRefreshTokenAsync(string oldRefreshToken)
+        public async Task<GetTokensVM> RefreshToken(string oldRT)
         {
             var userId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
             if (string.IsNullOrWhiteSpace(userId))
@@ -105,7 +105,7 @@ namespace Services.Services
             DateTime expiredTime;
             try
             {
-                expiredTime = DecodeOldRefreshToken(oldRefreshToken);
+                expiredTime = DecodeOldRefreshToken(oldRT);
             }
             catch
             {

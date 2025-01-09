@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -52,14 +51,17 @@ namespace Services.Services
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Số điện thoại hoặc mật khẩu không đúng!");
             }
             GetTokensVM token = await _tokenService.GenerateTokens(user.Id.ToString(), null);
-            return new GetSignInVM()
+            string? role = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+            GetSignInVM result = new()
             {
                 User = _mapper.Map<GetUsersVM>(user),
                 Token = token
             };
+            result.User.RoleFullName = role ?? "";
+            return result;
         }
 
-        public async Task SignUp(PostSignUpVM model)
+        public async Task SignUp(PostSignUpVM model, string role)
         {
             User? user = await _unitOfWork.GetRepo<User>().Entities.FirstOrDefaultAsync(p => p.PhoneNumber == model.PhoneNumber);
             if (user != null)
@@ -79,7 +81,8 @@ namespace Services.Services
                 SecurityStamp = Guid.NewGuid().ToString("N")
             };
             await _unitOfWork.GetRepo<User>().Insert(newUser);
-            await _userManager.AddToRoleAsync(newUser, "User");
+
+            await _userManager.AddToRoleAsync(newUser, role);
             await _unitOfWork.Save();
         }
     }

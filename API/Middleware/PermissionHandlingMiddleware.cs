@@ -57,7 +57,7 @@ namespace API.Middleware
             {
                 {
                     string userRole = Authentication.GetUserRoleFromHttpContext(context);
-                    if (userRole == "Manager") return true;
+                    if (userRole == "Admin") return true;
                     if (_rolePermissions.TryGetValue(userRole, out var allowedControllers))
                     {
                         return allowedControllers.Any(uri => requestUri.StartsWith(uri, System.StringComparison.OrdinalIgnoreCase));

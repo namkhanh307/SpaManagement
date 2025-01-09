@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Infrastructures;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.IRepos;
@@ -45,7 +44,7 @@ namespace Services.Services
             foreach (var item in entities)
             {
                 var result = _mapper.Map<TGetModel>(item);
-                if(item is BaseEntity baseEntity)
+                if (item is BaseEntity baseEntity)
                 {
                     var user = await _unitOfWork.GetRepo<User>().GetById(baseEntity.CreatedBy ?? "");
                     result.CreatedBy = user?.FullName ?? "";
@@ -78,7 +77,7 @@ namespace Services.Services
             T? result = await query.FirstOrDefaultAsync(e => EF.Property<string>(e, "Id") == id);
             if (result != null)
             {
-                if(result is BaseEntity baseEntity)
+                if (result is BaseEntity baseEntity)
                 {
                     Task<User?> user = _unitOfWork.GetRepo<User>().GetById(baseEntity.CreatedBy != null ? baseEntity.CreatedBy : "");
                     baseEntity.CreatedBy = user.Result != null ? user.Result.FullName : "";

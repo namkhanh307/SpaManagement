@@ -6,7 +6,7 @@ namespace Services.IServices
     public interface ITokenService
     {
         Task<GetTokensVM> GenerateTokens(string userId, DateTime? expiredTime);
-        Task<GetTokensVM> GenerateNewRefreshTokenAsync(string oldRefreshToken);
+        Task<GetTokensVM> RefreshToken(string oldRT);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
         bool IsTokenExpired(string token);
     }

@@ -16,7 +16,7 @@ namespace API.Controllers
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(PostSignUpVM model)
         {
-            await _authService.SignUp(model);
+            await _authService.SignUp(model, "User");
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
@@ -48,6 +48,16 @@ namespace API.Controllers
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: "Đổi mật khẩu thành công!"));
+        }
+
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken(string oldRT)
+        {
+            await _tokenService.RefreshToken(oldRT);
+            return Ok(new BaseResponseModel<string>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: "Làm mới token thành công!"));
         }
     }
 }

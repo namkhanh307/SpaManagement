@@ -1,6 +1,5 @@
 ﻿using Core.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Repos.Entities;
 using Repos.ViewModels;
 using Repos.ViewModels.ProductVM;
@@ -16,7 +15,7 @@ namespace API.Controllers
         [HttpGet("get")]
         public async Task<IActionResult> GetProducts(int pageNumber = 1, int pageSize = 10)
         {
-            PagingVM<GetProductsVM> result = await _baseService.GetAsync(null, null, null, pageNumber, pageSize);         
+            PagingVM<GetProductsVM> result = await _baseService.GetAsync(null, null, null, pageNumber, pageSize);
             return Ok(new BaseResponseModel<PagingVM<GetProductsVM>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
@@ -32,9 +31,9 @@ namespace API.Controllers
                 data: "Thêm sản phẩm mới thành công"));
         }
         [HttpPut]
-        public async Task<IActionResult> PutProduct(string id,PutProductVM model)
+        public async Task<IActionResult> PutProduct(string id, PutProductVM model)
         {
-            await _baseService.PutAsync(id, model); 
+            await _baseService.PutAsync(id, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
@@ -50,5 +49,5 @@ namespace API.Controllers
               data: "Xóa sản phẩm thành công"));
         }
     }
-    
+
 }

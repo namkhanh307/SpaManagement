@@ -1,19 +1,18 @@
 ﻿using Core.Infrastructures;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repos.Entities;
-using Repos.ViewModels.ProductVM;
 using Repos.ViewModels;
-using Services.IServices;
-using Services.Services;
+using Repos.ViewModels.AuthVM;
 using Repos.ViewModels.UserVM;
+using Services.IServices;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController(IBaseService<PostUserVM, PostUserVM, GetUsersVM, User> baseService) : ControllerBase
+    public class UsersController(IAuthService authService, IBaseService<PostUserVM, PostUserVM, GetUsersVM, User> baseService) : ControllerBase
     {
+        private readonly IAuthService _authService = authService;
         private readonly IBaseService<PostUserVM, PostUserVM, GetUsersVM, User> _baseService = baseService;
         [HttpGet("get")]
         public async Task<IActionResult> GetUsers(int pageNumber = 1, int pageSize = 10)
@@ -25,9 +24,9 @@ namespace API.Controllers
                 data: result));
         }
         [HttpPost("post")]
-        public async Task<IActionResult> PostUsers(PostUserVM model)
+        public async Task<IActionResult> PostUsers(PostSignUpVM model, string role)
         {
-            await _baseService.PostAsync(model);
+            await _authService.SignUp(model, role);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

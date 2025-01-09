@@ -18,7 +18,7 @@ namespace API.Controllers
             _baseService = baseService;
         }
 
-        [HttpPost]
+        [HttpPost("post")]
         public async Task<IActionResult> PostOrder(PostOrderVM model)
         {
             await _baseService.PostAsync(model);
@@ -28,7 +28,7 @@ namespace API.Controllers
                 data: "Thêm order mới thành công"));
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<IActionResult> GetOrders(int pageNumber = 1, int pageSize = 10, string? userId = null)
         {
             PagingVM<GetOrdersVM> result = await _baseService.GetAsync(o => o.Include(a => a.User).Include(a => a.OrderDetails), o => o.UserId == userId, o => o.OrderBy(opt => opt.CreatedAt), pageNumber, pageSize);

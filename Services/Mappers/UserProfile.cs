@@ -10,7 +10,6 @@ namespace Services.Mappers
         {
             CreateMap<GetUsersVM, User>().ReverseMap();
             CreateMap<PostUserVM, User>().ReverseMap();
-
         }
     }
 }

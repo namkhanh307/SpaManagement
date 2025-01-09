@@ -1,5 +1,4 @@
-﻿using Repos.Entities;
-using Repos.ViewModels;
+﻿using Repos.ViewModels;
 using System.Linq.Expressions;
 
 namespace Services.IServices

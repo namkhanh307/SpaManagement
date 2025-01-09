@@ -9,9 +9,9 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServicesController(IBaseService<PostServiceVM, PutServiceVM, GetServicesVM,Service> baseService) : ControllerBase
+    public class ServicesController(IBaseService<PostServiceVM, PutServiceVM, GetServicesVM, Service> baseService) : ControllerBase
     {
-        private readonly IBaseService<PostServiceVM , PutServiceVM, GetServicesVM, Service> _baseService = baseService;
+        private readonly IBaseService<PostServiceVM, PutServiceVM, GetServicesVM, Service> _baseService = baseService;
         [HttpGet]
         public async Task<IActionResult> GetService(int pageNumber = 1, int pageSize = 10)
         {
