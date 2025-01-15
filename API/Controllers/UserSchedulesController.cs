@@ -39,6 +39,9 @@ namespace API.Controllers
                 data: "Thêm UserSchedule thành công"));
         }
 
+        //[HttpPut]
+        //public async Task<IActionResult> PutUserSchedule()
+
         [HttpDelete]
         public async Task<IActionResult> DeleteUserSchedule(string userScheduleId)
         {

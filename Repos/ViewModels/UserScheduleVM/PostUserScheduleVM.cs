@@ -9,5 +9,8 @@ namespace Repos.ViewModels.UserScheduleVM
 
         [Required(ErrorMessage = "Vui lòng chọn lịch làm việc!")]
         public string ScheduleId { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "SalaryId is required.")]
+        public string SalaryId { get; set; } = string.Empty;
     }
 }
