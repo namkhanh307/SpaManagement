@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Repos.ViewModels.SalaryVM
 {
     public class PutSalaryVM
     {
-        public double Amount { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập số tiền!")]
+        [Range(0.000001, double.MaxValue, ErrorMessage = "Số tiền phải lớn hơn 0!")]
+        public double Total { get; set; }
     }
 }

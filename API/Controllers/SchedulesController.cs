@@ -17,17 +17,17 @@ namespace API.Controllers
             _baseService = baseService;
         }
 
-        [HttpPost]
+        [HttpPost("post")]
         public async Task<IActionResult> PostSchedule(PostScheduleVM model)
         {
-            await _baseService.PostAsync(model);
+            await _baseService.PostAsync(model, null);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: "Thêm schedule mới thành công"));
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<IActionResult> GetSchedules(int pageNumber = 1, int pageSize = 10)
         {
             PagingVM<GetScheduleVM> result = await _baseService.GetAsync(null, null, null, pageNumber, pageSize);

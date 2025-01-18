@@ -24,11 +24,11 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostService(PostServiceVM model)
         {
-            await _baseService.PostAsync(model);
+            await _baseService.PostAsync(model, null);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Thêm dịch  mới thành công"));
+                data: "Thêm dịch vụ mới thành công"));
         }
         [HttpPut]
         public async Task<IActionResult> PutService(string id, PutServiceVM model)
@@ -37,7 +37,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Sửa dịch vụ mới thành công"));
+               data: "Sửa dịch vụ thành công"));
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteService(string id)

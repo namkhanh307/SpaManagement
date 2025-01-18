@@ -7,7 +7,7 @@ namespace Services.IServices
     {
         Task<PagingVM<TGetModel>> GetAsync(Func<IQueryable<T>, IQueryable<T>>? include = null, Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int pageNumber = 1, int pageSize = 10);
         Task<TGetModel> GetByIdAsync(string id, Func<IQueryable<T>, IQueryable<T>>? include = null);
-        Task PostAsync(TPostModel model);
+        Task PostAsync(TPostModel model, List<Dictionary<string, string>>? foreignKeyChecks);
         Task PutAsync(string id, TPutModel model);
         Task DeleteAsync(string id);
     }

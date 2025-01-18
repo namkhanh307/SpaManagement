@@ -1,12 +1,6 @@
 using AutoMapper;
 using Repos.Entities;
-using Repos.ViewModels.PayRateVM;
 using Repos.ViewModels.SalaryVM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Mappers
 {
@@ -14,8 +8,10 @@ namespace Services.Mappers
     {
         public SalaryProfile()
         {
-            CreateMap<GetSalariesVM, Salary>().ReverseMap();
+            CreateMap<GetSalariesVM, Salary>().ReverseMap().ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User != null ? src.User.FullName : string.Empty));
             CreateMap<PostSalaryVM, Salary>().ReverseMap();
+            CreateMap<PutSalaryVM, Salary>().ReverseMap();
+
 
         }
     }
