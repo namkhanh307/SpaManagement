@@ -1,4 +1,3 @@
-using Repos.ViewModels;
 using Repos.ViewModels.SalaryVM;
 
 namespace Services.IServices

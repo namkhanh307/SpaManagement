@@ -41,10 +41,17 @@ namespace Services.Services
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Vai trò không tồn tại!");
             }
-            var claims = new List<Claim>
+            var atClaims = new List<Claim>
             {
                 new("id", userId.ToString()),
-                new("role", role.Result.FirstOrDefault()!)
+                new("role", role.Result.FirstOrDefault()!),
+                new("name", "AT")
+            };
+            var rtClaims = new List<Claim>
+            {
+                new("id", userId.ToString()),
+                new("role", role.Result.FirstOrDefault()!),
+                new("name", "RT")
             };
             int expiredMinutes = int.Parse(_configuration["JWT:AccessTokenExpirationMinutes"]!);
             int expiredDays = int.Parse(_configuration["JWT:RefreshTokenExpirationDays"]!);
@@ -58,7 +65,7 @@ namespace Services.Services
             var accessToken = new JwtSecurityToken(
                 issuer: _configuration.GetSection("JWT:Issuer").Value,
                 audience: _configuration.GetSection("JWT:Audience").Value,
-                claims: claims,
+                claims: atClaims,
                 notBefore: now,
                 expires: now.AddMinutes(expiredMinutes),
                 signingCredentials: creds
@@ -69,7 +76,7 @@ namespace Services.Services
             var refreshToken = new JwtSecurityToken(
                 issuer: _configuration.GetSection("JWT:Issuer").Value,
                 audience: _configuration.GetSection("JWT:Audience").Value,
-                claims: claims,
+                claims: rtClaims,
                 notBefore: now,
                 expires: expiredTime != null ? expiredTime : now.AddDays(expiredDays),
                 signingCredentials: creds

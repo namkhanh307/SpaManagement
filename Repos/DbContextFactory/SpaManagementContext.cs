@@ -45,7 +45,7 @@ public partial class SpaManagementContext : IdentityDbContext<User, Role, string
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString());
+        => optionsBuilder.UseSqlServer("Server=103.162.25.178,1433;Database=SpaManagement;User ID=SA;Password=Itjustapassword1@;TrustServerCertificate=True;Encrypt=false;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
