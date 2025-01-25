@@ -36,6 +36,7 @@ namespace Services
             services.AddAutoMapper(typeof(UserScheduleProfile).Assembly);
             services.AddAutoMapper(typeof(TransactionProfile).Assembly);
             services.AddAutoMapper(typeof(ImageProfile).Assembly);
+            services.AddAutoMapper(typeof(PackageProfile).Assembly);
         }
         public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
@@ -44,6 +45,7 @@ namespace Services
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ISalaryService, SalaryService>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IPSService, PSService>();
         }
     }
 }

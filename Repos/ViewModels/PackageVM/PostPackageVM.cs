@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace Repos.ViewModels.PackageVM
 {
@@ -9,5 +10,14 @@ namespace Repos.ViewModels.PackageVM
 
         [Required(ErrorMessage = "Vui lòng nhập chú thích!")]
         public string Description { get; set; } = string.Empty;
+
+        public ICollection<PostPackageServiceVM> Services { get; set; } = new List<PostPackageServiceVM>();
+    }
+
+    public class PostPackageServiceVM
+    {
+        public string ServiceId { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public EnumPackageService Type { get; set; }
     }
 }

@@ -166,8 +166,6 @@ namespace Services.Services
             }
         }
 
-
-
         public async Task PutAsync(string id, TPutModel model)
         {
             string currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);

@@ -18,18 +18,15 @@ namespace Repos.DbContextFactory
             {
                 if (_context.Database.IsSqlServer())
                 {
-                    if (_context.Database.IsSqlServer())
+                    bool dbExists = _context.Database.CanConnect();
+                    if (dbExists)
                     {
-                        bool dbExists = _context.Database.CanConnect();
-                        if (dbExists)
-                        {
-                            _context.Database.Migrate();
-                        }
-                        else
-                        {
-                            _context.Database.Migrate();
-                            Seed();
-                        }
+                        _context.Database.Migrate();
+                    }
+                    else
+                    {
+                        _context.Database.Migrate();
+                        Seed();
                     }
                 }
             }
@@ -68,8 +65,6 @@ namespace Repos.DbContextFactory
             AssignRoleToUser("user", "User");
             AssignRoleToUser("admin", "Admin");
             AssignRoleToUser("manager", "Manager");
-
-
         }
 
         private static Role[] CreateRole()

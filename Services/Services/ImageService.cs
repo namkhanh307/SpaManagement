@@ -52,7 +52,7 @@ namespace Services.Services
         {
             if (model.Image is null)
             {
-                return;
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Vui lòng upload ảnh!");
             }
             foreach (IFormFile file in model.Image)
             {

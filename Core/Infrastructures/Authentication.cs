@@ -168,7 +168,7 @@ namespace Core.Infrastructures
                 var token = tokenHandler.ReadJwtToken(jwtToken);
                 var roleClaim = token.Claims.FirstOrDefault(claim => claim.Type == "role");
                 var tokenType = token.Claims.FirstOrDefault(claim => claim.Type == "name");
-                if(tokenType != null && tokenType.Value == "RT") throw new UnauthorizedException("You do not have permission to access this feature");
+                //if(tokenType != null && tokenType.Value == "RT") throw new UnauthorizedException("You do not have permission to access this feature");
                 return roleClaim?.Value ?? throw new UnauthorizedException("Cannot get user role from token");
             }
             catch (UnauthorizedException ex)
